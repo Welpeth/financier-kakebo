@@ -1,0 +1,15 @@
+# IDEs e Ferramentas (Geral)
+.idea/
+out/
+*.iml
+
+# Backend (Spring Boot / Maven)
+backend/target/
+backend/.idea/
+backend/out/
+
+# Frontend (Node / React / Angular)
+frontend/node_modules/
+frontend/.idea/
+frontend/dist/
+frontend/build/
