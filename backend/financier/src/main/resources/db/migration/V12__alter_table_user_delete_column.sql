@@ -1,1 +1,1 @@
-ALTER TABLE "user" DROP COLUMN id_address;
+ALTER TABLE holder DROP COLUMN id_address;

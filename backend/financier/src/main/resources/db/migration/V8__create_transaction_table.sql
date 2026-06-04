@@ -9,7 +9,7 @@ CREATE TABLE "transaction"
     type            VARCHAR(50),
     description     VARCHAR(500),
     created_at      TIMESTAMP      DEFAULT CURRENT_TIMESTAMP,
-    created_by      TIMESTAMP      NULL,
+    created_by      VARCHAR(255)   NULL,
     updated_at      TIMESTAMP      DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_transaction_account_card
