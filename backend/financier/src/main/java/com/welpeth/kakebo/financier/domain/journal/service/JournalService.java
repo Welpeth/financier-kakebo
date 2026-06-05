@@ -1,10 +1,10 @@
 package com.welpeth.kakebo.financier.domain.journal.service;
 
 import com.welpeth.kakebo.financier.domain.journal.dto.CreateJournalRequest;
-import com.welpeth.kakebo.financier.domain.journal.dto.GetJournalRequest;
 import com.welpeth.kakebo.financier.domain.journal.dto.UpdateJournalRequest;
 import com.welpeth.kakebo.financier.domain.journal.entity.Journal;
 import com.welpeth.kakebo.financier.domain.journal.repository.JournalRepository;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,5 +31,13 @@ public class JournalService {
 
   public void update(UpdateJournalRequest request) {
     repository.update(request);
+  }
+
+  public void delete(UUID id) {
+    repository.deleteById(id);
+  }
+
+  public List<Journal> getList() {
+    return repository.findAll();
   }
 }

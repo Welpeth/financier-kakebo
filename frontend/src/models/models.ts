@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 4.1.1 on 2026-06-05 05:26:33.
+// Generated using typescript-generator version 4.1.1 on 2026-06-05 17:46:40.
 
 export interface Account extends BaseEntity {
     holder: Holder;
@@ -279,10 +279,10 @@ export interface Expression<T> extends Serializable {
 }
 
 export interface TypeVariable<D> extends Type, AnnotatedElement {
-    genericDeclaration: D;
-    annotatedBounds: AnnotatedType[];
     name: string;
     bounds: Type[];
+    genericDeclaration: D;
+    annotatedBounds: AnnotatedType[];
 }
 
 export interface OfField<F> extends TypeDescriptor {
@@ -297,8 +297,8 @@ export interface LiteralExpression<T> extends ComparableExpression<T> {
 }
 
 export interface AnnotatedType extends AnnotatedElement {
-    annotatedOwnerType: AnnotatedType;
     type: Type;
+    annotatedOwnerType: AnnotatedType;
 }
 
 export interface TypeDescriptor {
