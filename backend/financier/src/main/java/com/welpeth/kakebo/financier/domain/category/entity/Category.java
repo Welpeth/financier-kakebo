@@ -1,9 +1,12 @@
 package com.welpeth.kakebo.financier.domain.category.entity;
 
 import com.welpeth.kakebo.financier.base.BaseEntity;
+import com.welpeth.kakebo.financier.domain.journal.entity.Journal;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import java.util.UUID;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +15,12 @@ import lombok.Setter;
 @Entity
 public class Category extends BaseEntity {
 
-  @Id
-  private UUID id;
+  @Column(name = "name")
+  private String name;
+
+  // Foreign Keys
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "id_journal")
+  private Journal journal;
 
 }

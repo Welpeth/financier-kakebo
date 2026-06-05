@@ -1,7 +1,7 @@
-package com.welpeth.kakebo.financier.domain.userAddress.entity;
+package com.welpeth.kakebo.financier.domain.holderAddress.entity;
 
 import com.welpeth.kakebo.financier.domain.address.entity.Address;
-import com.welpeth.kakebo.financier.domain.user.entity.Holder;
+import com.welpeth.kakebo.financier.domain.holder.entity.Holder;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,14 +14,14 @@ public class HolderAddress {
   @EmbeddedId
   private HolderAddressId id = new HolderAddressId();
 
-  @ManyToOne
   @MapsId("idHolder")
-  @JoinColumn(name = "id_holder")
-  private Holder user;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "id_holder", nullable = false)
+  private Holder holder;
 
-  @ManyToOne
   @MapsId("idAddress")
-  @JoinColumn(name = "id_address")
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "id_address", nullable = false)
   private Address address;
 
 }

@@ -1,6 +1,6 @@
-package com.welpeth.kakebo.financier.domain.userAddress.entity;
+package com.welpeth.kakebo.financier.domain.holderAddress.entity;
 
-import jakarta.persistence.Embeddable;
+import jakarta.persistence.Column;import jakarta.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
@@ -16,7 +16,10 @@ import lombok.AllArgsConstructor;
 @Embeddable
 public class HolderAddressId implements Serializable {
 
+  @Column(name = "id_holder")
   private UUID idHolder;
+
+  @Column(name = "id_address")
   private UUID idAddress;
 
   @Override

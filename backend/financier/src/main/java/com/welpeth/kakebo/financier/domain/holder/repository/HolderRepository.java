@@ -1,6 +1,6 @@
-package com.welpeth.kakebo.financier.domain.user.repository;
+package com.welpeth.kakebo.financier.domain.holder.repository;
 
-import com.welpeth.kakebo.financier.domain.user.entity.Holder;
+import com.welpeth.kakebo.financier.domain.holder.entity.Holder;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

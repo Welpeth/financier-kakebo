@@ -7,4 +7,9 @@ public final class ApiPath {
   public static final String AUTH_LOGIN = AUTH + "/login";
   public static final String AUTH_REGISTER = AUTH + "/register";
 
+  // Category
+  public static final String CATEGORY = "/category";
+
+  // Journal
+  public static final String JOURNAL = "/journal";
 }

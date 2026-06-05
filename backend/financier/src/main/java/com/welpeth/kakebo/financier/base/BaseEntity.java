@@ -26,7 +26,6 @@ import java.util.UUID;
 @ToString
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@JsonFilter("excluded")
 public class BaseEntity {
 
   public BaseEntity(UUID id) {
