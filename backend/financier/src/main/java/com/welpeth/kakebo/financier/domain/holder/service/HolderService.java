@@ -1,10 +1,10 @@
-package com.welpeth.kakebo.financier.domain.user.service;
+package com.welpeth.kakebo.financier.domain.holder.service;
 
 import com.welpeth.kakebo.financier.config.JwtService;
-import com.welpeth.kakebo.financier.domain.user.dto.LoginRequest;
-import com.welpeth.kakebo.financier.domain.user.entity.Holder;
-import com.welpeth.kakebo.financier.domain.user.dto.LoginResponse;
-import com.welpeth.kakebo.financier.domain.user.repository.HolderRepository;
+import com.welpeth.kakebo.financier.domain.holder.dto.LoginRequest;
+import com.welpeth.kakebo.financier.domain.holder.entity.Holder;
+import com.welpeth.kakebo.financier.domain.holder.dto.LoginResponse;
+import com.welpeth.kakebo.financier.domain.holder.repository.HolderRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.crypto.password.PasswordEncoder;

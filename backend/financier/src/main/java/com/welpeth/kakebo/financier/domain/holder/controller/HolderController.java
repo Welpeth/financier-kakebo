@@ -1,9 +1,9 @@
-package com.welpeth.kakebo.financier.domain.user.controller;
+package com.welpeth.kakebo.financier.domain.holder.controller;
 
 import com.welpeth.kakebo.financier.config.ApiPath;
-import com.welpeth.kakebo.financier.domain.user.dto.LoginRequest;
-import com.welpeth.kakebo.financier.domain.user.dto.LoginResponse;
-import com.welpeth.kakebo.financier.domain.user.service.HolderService;
+import com.welpeth.kakebo.financier.domain.holder.dto.LoginRequest;
+import com.welpeth.kakebo.financier.domain.holder.dto.LoginResponse;
+import com.welpeth.kakebo.financier.domain.holder.service.HolderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

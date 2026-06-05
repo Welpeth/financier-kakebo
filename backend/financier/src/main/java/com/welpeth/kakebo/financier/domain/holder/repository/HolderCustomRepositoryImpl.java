@@ -1,8 +1,8 @@
-package com.welpeth.kakebo.financier.domain.user.repository;
+package com.welpeth.kakebo.financier.domain.holder.repository;
 
 import com.welpeth.kakebo.financier.base.BaseCustomRepositoryImpl;
-import com.welpeth.kakebo.financier.domain.user.entity.QHolder;
-import com.welpeth.kakebo.financier.domain.user.entity.Holder;
+import com.welpeth.kakebo.financier.domain.holder.entity.QHolder;
+import com.welpeth.kakebo.financier.domain.holder.entity.Holder;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
 

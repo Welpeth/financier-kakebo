@@ -1,7 +1,7 @@
-package com.welpeth.kakebo.financier.domain.user.repository;
+package com.welpeth.kakebo.financier.domain.holder.repository;
 
 import com.welpeth.kakebo.financier.base.BaseCustomRepository;
-import com.welpeth.kakebo.financier.domain.user.entity.Holder;import java.util.Optional;
+import com.welpeth.kakebo.financier.domain.holder.entity.Holder;import java.util.Optional;
 
 interface HolderCustomRepository extends BaseCustomRepository<Holder> {
 
