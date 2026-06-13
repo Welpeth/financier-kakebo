@@ -3,7 +3,9 @@ package com.welpeth.kakebo.financier.domain.category.repository;
 import com.welpeth.kakebo.financier.domain.category.entity.Category;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface CategoryRepository extends JpaRepository<Category, UUID> {
+@Repository
+public interface CategoryRepository extends JpaRepository<Category, UUID>, CategoryCustomRepository {
 
 }
