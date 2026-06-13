@@ -1,15 +1,15 @@
 package com.welpeth.kakebo.financier.domain.journal.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.welpeth.kakebo.financier.base.BaseEntity;
 import com.welpeth.kakebo.financier.domain.category.entity.Category;
-import com.welpeth.kakebo.financier.domain.ledgerEntry.entity.LedgerEntry;import jakarta.persistence.Column;
+import com.welpeth.kakebo.financier.domain.ledgerEntry.entity.LedgerEntry;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,9 +25,11 @@ public class Journal extends BaseEntity {
   private BigDecimal totalValue;
 
   // Foreign Keys
+  @JsonIgnore
   @OneToMany(mappedBy = "journal", fetch = FetchType.LAZY)
   private List<Category> categories;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "journal", fetch = FetchType.LAZY)
   private List<LedgerEntry> ledgerEntries;
 

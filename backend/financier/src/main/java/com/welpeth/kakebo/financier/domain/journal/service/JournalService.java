@@ -4,6 +4,7 @@ import com.welpeth.kakebo.financier.domain.journal.dto.CreateJournalRequest;
 import com.welpeth.kakebo.financier.domain.journal.dto.UpdateJournalRequest;
 import com.welpeth.kakebo.financier.domain.journal.entity.Journal;
 import com.welpeth.kakebo.financier.domain.journal.repository.JournalRepository;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class JournalService {
     Journal journal = new Journal();
     journal.setId(UUID.randomUUID());
     journal.setName(request.name());
-    journal.setTotalValue(request.totalValue());
+    journal.setTotalValue(BigDecimal.ZERO);
 
     repository.save(journal);
     return journal;
@@ -31,6 +32,10 @@ public class JournalService {
 
   public void update(UpdateJournalRequest request) {
     repository.update(request);
+  }
+
+  public void recalculateTotal(UUID journalId) {
+    repository.recalculateTotal(journalId);
   }
 
   public void delete(UUID id) {

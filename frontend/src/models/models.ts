@@ -1,6 +1,21 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 4.1.1 on 2026-06-06 00:59:52.
+// Generated using typescript-generator version 4.1.1 on 2026-06-13 14:31:28.
+
+export interface CreateAccountRequest {
+    name: string;
+    isActive: boolean;
+    balance: number;
+    type: AccountType;
+}
+
+export interface UpdateAccountRequest {
+    id: string;
+    name: string;
+    isActive: boolean;
+    balance: number;
+    type: AccountType;
+}
 
 export interface Account extends BaseEntity {
     name: string;
@@ -8,8 +23,6 @@ export interface Account extends BaseEntity {
     balance: number;
     type: AccountType;
     holder: Holder;
-    accountCards: AccountCard[];
-    transactions: Transaction[];
 }
 
 export interface QAccount extends EntityPathBase<Account> {
@@ -26,6 +39,26 @@ export interface QAccount extends EntityPathBase<Account> {
     updatedAt: DateTimePath<Date>;
 }
 
+export interface CreateAccountCardRequest {
+    name: string;
+    isActive: boolean;
+    type: CardType;
+    creditLimit: number;
+    expirationMonth: number;
+    expirationYear: number;
+    account: Account;
+}
+
+export interface UpdateAccountCardRequest {
+    id: string;
+    name: string;
+    isActive: boolean;
+    type: CardType;
+    creditLimit: number;
+    expirationMonth: number;
+    expirationYear: number;
+}
+
 export interface AccountCard extends BaseEntity {
     name: string;
     isActive: boolean;
@@ -34,7 +67,6 @@ export interface AccountCard extends BaseEntity {
     expirationMonth: number;
     expirationYear: number;
     account: Account;
-    transactions: Transaction[];
 }
 
 export interface QAccountCard extends EntityPathBase<AccountCard> {
@@ -52,6 +84,9 @@ export interface QAccountCard extends EntityPathBase<AccountCard> {
     updatedAt: DateTimePath<Date>;
 }
 
+export interface CreateAddressRequest {
+}
+
 export interface Address extends BaseEntity {
     holders: HolderAddress[];
 }
@@ -66,6 +101,12 @@ export interface QAddress extends EntityPathBase<Address> {
 }
 
 export interface CreateCategoryRequest {
+    name: string;
+    journal: Journal;
+}
+
+export interface UpdateCategoryRequest {
+    id: string;
     name: string;
 }
 
@@ -93,11 +134,15 @@ export interface LoginResponse {
     token: string;
 }
 
-export interface Holder extends BaseEntity {
-    password: string;
+export interface RegisterRequest {
+    name: string;
     email: string;
-    addresses: HolderAddress[];
-    accounts: Account[];
+    password: string;
+}
+
+export interface Holder extends BaseEntity {
+    name: string;
+    email: string;
 }
 
 export interface QHolder extends EntityPathBase<Holder> {
@@ -108,8 +153,14 @@ export interface QHolder extends EntityPathBase<Holder> {
     createdBy: StringPath;
     email: StringPath;
     id: ComparablePath<string>;
+    name: StringPath;
     password: StringPath;
     updatedAt: DateTimePath<Date>;
+}
+
+export interface CreateHolderAddressRequest {
+    holder: Holder;
+    address: Address;
 }
 
 export interface HolderAddress {
@@ -136,7 +187,6 @@ export interface QHolderAddressId extends BeanPath<HolderAddressId> {
 
 export interface CreateJournalRequest {
     name: string;
-    totalValue: number;
 }
 
 export interface GetJournalRequest {
@@ -146,14 +196,11 @@ export interface GetJournalRequest {
 export interface UpdateJournalRequest {
     id: string;
     name: string;
-    totalValue: number;
 }
 
 export interface Journal extends BaseEntity {
     name: string;
     totalValue: number;
-    categories: Category[];
-    ledgerEntries: LedgerEntry[];
 }
 
 export interface QJournal extends EntityPathBase<Journal> {
@@ -166,6 +213,19 @@ export interface QJournal extends EntityPathBase<Journal> {
     name: StringPath;
     totalValue: NumberPath<number>;
     updatedAt: DateTimePath<Date>;
+}
+
+export interface CreateLedgerEntryRequest {
+    name: string;
+    finalDate: Date;
+    journal: Journal;
+    transaction: Transaction;
+}
+
+export interface UpdateLedgerEntryRequest {
+    id: string;
+    name: string;
+    finalDate: Date;
 }
 
 export interface LedgerEntry extends BaseEntity {
@@ -190,16 +250,21 @@ export interface QLedgerEntry extends EntityPathBase<LedgerEntry> {
 export interface CreateTransactionRequest {
     account: Account;
     accountCard: AccountCard;
+    category: Category;
     type: TransactionType;
+    amount: number;
     fee: number;
     installment: number;
     description: string;
 }
 
 export interface UpdateTransactionRequest {
+    id: string;
     account: Account;
     accountCard: AccountCard;
+    category: Category;
     type: TransactionType;
+    amount: number;
     fee: number;
     installment: number;
     description: string;
@@ -209,6 +274,8 @@ export interface QTransaction extends EntityPathBase<Transaction> {
     _super: QBaseEntity;
     account: QAccount;
     accountCard: QAccountCard;
+    amount: NumberPath<number>;
+    category: QCategory;
     createdAt: DateTimePath<Date>;
     createdBy: StringPath;
     description: StringPath;
@@ -220,13 +287,14 @@ export interface QTransaction extends EntityPathBase<Transaction> {
 }
 
 export interface Transaction extends BaseEntity {
-    installment: number;
+    amount: number;
     fee: number;
+    installment: number;
     type: TransactionType;
     description: string;
     account: Account;
     accountCard: AccountCard;
-    ledgerEntries: LedgerEntry[];
+    category: Category;
 }
 
 export interface BaseEntity {
@@ -266,8 +334,13 @@ export interface Class<T> extends Serializable, GenericDeclaration, Type, Annota
 
 export interface Path<T> extends Expression<T> {
     root: Path<any>;
-    metadata: PathMetadata;
     annotatedElement: AnnotatedElement;
+    metadata: PathMetadata;
+}
+
+export interface AnnotatedElement {
+    annotations: Annotation[];
+    declaredAnnotations: Annotation[];
 }
 
 export interface PathMetadata extends Serializable {
@@ -277,11 +350,6 @@ export interface PathMetadata extends Serializable {
     pathType: PathType;
     name: string;
     root: boolean;
-}
-
-export interface AnnotatedElement {
-    annotations: Annotation[];
-    declaredAnnotations: Annotation[];
 }
 
 export interface Serializable {
@@ -332,10 +400,10 @@ export interface Predicate extends Expression<boolean> {
 }
 
 export interface TypeVariable<D> extends Type, AnnotatedElement {
-    name: string;
-    bounds: Type[];
     genericDeclaration: D;
     annotatedBounds: AnnotatedType[];
+    name: string;
+    bounds: Type[];
 }
 
 export interface OfField<F> extends TypeDescriptor {
@@ -351,8 +419,8 @@ export interface LiteralExpression<T> extends ComparableExpression<T> {
 }
 
 export interface AnnotatedType extends AnnotatedElement {
-    type: Type;
     annotatedOwnerType: AnnotatedType;
+    type: Type;
 }
 
 export interface TypeDescriptor {

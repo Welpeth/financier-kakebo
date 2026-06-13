@@ -36,6 +36,11 @@ public class AccountCardController {
     return ResponseEntity.status(HttpStatus.OK).body(accountCardService.getList());
   }
 
+  @GetMapping("/list/{accountId}")
+  public ResponseEntity<List<AccountCard>> getListByAccount(@PathVariable UUID accountId) {
+    return ResponseEntity.status(HttpStatus.OK).body(accountCardService.getListByAccount(accountId));
+  }
+
   @PostMapping
   public ResponseEntity<AccountCard> create(@RequestBody CreateAccountCardRequest request) {
     return ResponseEntity.status(HttpStatus.CREATED).body(accountCardService.create(request));

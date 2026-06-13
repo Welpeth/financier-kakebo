@@ -1,5 +1,6 @@
 package com.welpeth.kakebo.financier.domain.accountCard.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.welpeth.kakebo.financier.base.BaseEntity;
 import com.welpeth.kakebo.financier.domain.account.entity.Account;
 import com.welpeth.kakebo.financier.domain.accountCard.type.CardType;
@@ -13,7 +14,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -47,6 +47,7 @@ public class AccountCard extends BaseEntity {
   @JoinColumn(name = "id_account")
   private Account account;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "accountCard", fetch = FetchType.LAZY)
   private List<Transaction> transactions;
 
