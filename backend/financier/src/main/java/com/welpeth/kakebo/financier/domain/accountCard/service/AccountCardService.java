@@ -45,4 +45,8 @@ public class AccountCardService {
   public List<AccountCard> getList() {
     return repository.findAll();
   }
+
+  public List<AccountCard> getListByAccount(UUID accountId) {
+    return repository.findByAccountId(accountId);
+  }
 }

@@ -5,6 +5,7 @@ import com.welpeth.kakebo.financier.domain.account.type.AccountType;
 import com.welpeth.kakebo.financier.domain.accountCard.entity.AccountCard;
 import com.welpeth.kakebo.financier.domain.holder.entity.Holder;
 import com.welpeth.kakebo.financier.domain.transaction.entity.Transaction;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -41,9 +42,11 @@ public class Account extends BaseEntity {
   @JoinColumn(name = "id_holder")
   private Holder holder;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
   private List<AccountCard> accountCards;
 
+  @JsonIgnore
   @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
   private List<Transaction> transactions;
 }

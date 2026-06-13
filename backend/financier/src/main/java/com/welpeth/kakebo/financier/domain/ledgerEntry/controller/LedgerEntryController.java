@@ -36,6 +36,11 @@ public class LedgerEntryController {
     return ResponseEntity.status(HttpStatus.OK).body(ledgerEntryService.getList());
   }
 
+  @GetMapping("/list/{journalId}")
+  public ResponseEntity<List<LedgerEntry>> getListByJournal(@PathVariable UUID journalId) {
+    return ResponseEntity.status(HttpStatus.OK).body(ledgerEntryService.getListByJournal(journalId));
+  }
+
   @PostMapping
   public ResponseEntity<LedgerEntry> create(@RequestBody CreateLedgerEntryRequest request) {
     return ResponseEntity.status(HttpStatus.CREATED).body(ledgerEntryService.create(request));

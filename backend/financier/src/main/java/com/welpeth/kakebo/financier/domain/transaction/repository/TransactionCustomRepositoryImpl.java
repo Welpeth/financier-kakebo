@@ -24,10 +24,12 @@ public class TransactionCustomRepositoryImpl extends BaseCustomRepositoryImpl<Tr
 
     long rowsAffected = new JPAUpdateClause(entityManager, transaction)
         .set(transaction.type, request.type())
-        .set(transaction.fee, request.fee())
+        .set(transaction.amount, request.amount())
+        .set(transaction.fee, request.fee() != null ? request.fee() : java.math.BigDecimal.ZERO)
         .set(transaction.installment, request.installment())
         .set(transaction.account, request.account())
         .set(transaction.accountCard, request.accountCard())
+        .set(transaction.category, request.category())
         .set(transaction.updatedAt, LocalDateTime.now())
         .where(transaction.id.eq(request.id()))
         .execute();

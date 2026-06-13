@@ -7,7 +7,9 @@ import com.welpeth.kakebo.financier.domain.category.repository.CategoryRepositor
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +18,10 @@ public class CategoryService {
   private final CategoryRepository repository;
 
   public Category create(CreateCategoryRequest request) {
+    if (request.journal() == null) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Diário obrigatório");
+    }
+
     Category category = new Category();
     category.setId(UUID.randomUUID());
     category.setName(request.name());
