@@ -26,7 +26,7 @@ public class JournalService {
   }
 
   public Journal get(UUID id) {
-    return repository.findById(id).orElse(null);
+    return repository.getReferenceById(id);
   }
 
   public void update(UpdateJournalRequest request) {

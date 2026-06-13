@@ -5,4 +5,5 @@ import com.welpeth.kakebo.financier.domain.journal.dto.UpdateJournalRequest;impo
 
 public interface JournalCustomRepository extends BaseCustomRepository<Journal> {
 
-@Transactional void update(UpdateJournalRequest request);}
+@Transactional void update(UpdateJournalRequest request);
+}

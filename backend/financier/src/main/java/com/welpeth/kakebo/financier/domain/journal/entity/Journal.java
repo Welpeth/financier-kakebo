@@ -25,10 +25,10 @@ public class Journal extends BaseEntity {
   private BigDecimal totalValue;
 
   // Foreign Keys
-  @OneToMany(mappedBy = "journal")
+  @OneToMany(mappedBy = "journal", fetch = FetchType.LAZY)
   private List<Category> categories;
 
-  @OneToMany(mappedBy = "journal")
+  @OneToMany(mappedBy = "journal", fetch = FetchType.LAZY)
   private List<LedgerEntry> ledgerEntries;
 
 }
