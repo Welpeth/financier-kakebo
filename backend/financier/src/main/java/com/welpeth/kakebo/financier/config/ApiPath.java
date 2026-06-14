@@ -30,4 +30,13 @@ public final class ApiPath {
 
   // HolderAddress
   public static final String HOLDER_ADDRESS = "/holder-address";
+
+  // InstallmentPurchase
+  public static final String INSTALLMENT_PURCHASE = "/installment-purchase";
+
+  // Installment
+  public static final String INSTALLMENT = "/installment";
+
+  // Subscription
+  public static final String SUBSCRIPTION = "/subscription";
 }
