@@ -41,6 +41,9 @@ public class Transaction extends BaseEntity {
   @Column(name = "description")
   private String description;
 
+  @Column(name = "is_subscription")
+  private boolean subscription;
+
   // Foreign Keys
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "id_account")
