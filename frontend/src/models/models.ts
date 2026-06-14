@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 4.1.1 on 2026-06-13 14:31:28.
+// Generated using typescript-generator version 4.1.1 on 2026-06-13 21:55:48.
 
 export interface CreateAccountRequest {
     name: string;
@@ -102,7 +102,6 @@ export interface QAddress extends EntityPathBase<Address> {
 
 export interface CreateCategoryRequest {
     name: string;
-    journal: Journal;
 }
 
 export interface UpdateCategoryRequest {
@@ -112,7 +111,6 @@ export interface UpdateCategoryRequest {
 
 export interface Category extends BaseEntity {
     name: string;
-    journal: Journal;
 }
 
 export interface QCategory extends EntityPathBase<Category> {
@@ -120,7 +118,6 @@ export interface QCategory extends EntityPathBase<Category> {
     createdAt: DateTimePath<Date>;
     createdBy: StringPath;
     id: ComparablePath<string>;
-    journal: QJournal;
     name: StringPath;
     updatedAt: DateTimePath<Date>;
 }
@@ -205,7 +202,6 @@ export interface Journal extends BaseEntity {
 
 export interface QJournal extends EntityPathBase<Journal> {
     _super: QBaseEntity;
-    categories: ListPath<Category, QCategory>;
     createdAt: DateTimePath<Date>;
     createdBy: StringPath;
     id: ComparablePath<string>;
@@ -334,13 +330,8 @@ export interface Class<T> extends Serializable, GenericDeclaration, Type, Annota
 
 export interface Path<T> extends Expression<T> {
     root: Path<any>;
-    annotatedElement: AnnotatedElement;
     metadata: PathMetadata;
-}
-
-export interface AnnotatedElement {
-    annotations: Annotation[];
-    declaredAnnotations: Annotation[];
+    annotatedElement: AnnotatedElement;
 }
 
 export interface PathMetadata extends Serializable {
@@ -350,6 +341,11 @@ export interface PathMetadata extends Serializable {
     pathType: PathType;
     name: string;
     root: boolean;
+}
+
+export interface AnnotatedElement {
+    annotations: Annotation[];
+    declaredAnnotations: Annotation[];
 }
 
 export interface Serializable {

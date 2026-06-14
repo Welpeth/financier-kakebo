@@ -18,14 +18,9 @@ public class CategoryService {
   private final CategoryRepository repository;
 
   public Category create(CreateCategoryRequest request) {
-    if (request.journal() == null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Diário obrigatório");
-    }
-
     Category category = new Category();
     category.setId(UUID.randomUUID());
     category.setName(request.name());
-    category.setJournal(request.journal());
 
     repository.save(category);
     return category;

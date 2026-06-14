@@ -12,7 +12,6 @@ import type { Category, CreateCategoryRequest, UpdateCategoryRequest } from '@/m
 
 export default function CategoryList() {
   const { categories, loading, create, update, remove } = useCategories()
-  const { journals } = useJournals()
   const [formOpen, setFormOpen] = useState(false)
   const [editing, setEditing] = useState<Category | null>(null)
 
@@ -43,7 +42,6 @@ export default function CategoryList() {
         <Table>
           <Table.Head>
             <Table.Th>Nome</Table.Th>
-            <Table.Th>Diário</Table.Th>
             <Table.Th>Criado em</Table.Th>
             <Table.Th className="text-right">Ações</Table.Th>
           </Table.Head>
@@ -51,7 +49,6 @@ export default function CategoryList() {
             {categories.map((cat) => (
               <Table.Tr key={cat.id}>
                 <Table.Td className="font-medium">{cat.name}</Table.Td>
-                <Table.Td className="text-[var(--muted)]">{cat.journal?.name ?? '—'}</Table.Td>
                 <Table.Td className="text-[var(--muted)]">
                   {new Date(cat.createdAt).toLocaleDateString('pt-BR')}
                 </Table.Td>
@@ -72,7 +69,6 @@ export default function CategoryList() {
         onClose={closeForm}
         onSubmit={handleSubmit}
         initial={editing}
-        journals={journals}
       />
     </>
   )

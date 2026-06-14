@@ -75,7 +75,7 @@ export default function DashboardPage() {
       {loading ? (
         <div className="flex justify-center py-16"><Spinner size="lg" /></div>
       ) : (
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <div className="grid mt-6 grid-cols-2 gap-4 lg:grid-cols-4">
           {stats.map((s) => (
             <Card key={s.label}>
               <div className="flex items-start justify-between">

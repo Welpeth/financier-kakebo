@@ -24,11 +24,6 @@ public class Journal extends BaseEntity {
   @Column(name = "total_value")
   private BigDecimal totalValue;
 
-  // Foreign Keys
-  @JsonIgnore
-  @OneToMany(mappedBy = "journal", fetch = FetchType.LAZY)
-  private List<Category> categories;
-
   @JsonIgnore
   @OneToMany(mappedBy = "journal", fetch = FetchType.LAZY)
   private List<LedgerEntry> ledgerEntries;

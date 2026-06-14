@@ -47,7 +47,7 @@ public class JournalCustomRepositoryImpl extends BaseCustomRepositoryImpl<Journa
     QJournal journal = QJournal.journal;
 
     BigDecimal total = getQueryFactory()
-        .select(transaction.fee.sum())
+        .select(transaction.amount.sum())
         .from(ledgerEntry)
         .join(ledgerEntry.transaction, transaction)
         .where(ledgerEntry.journal.id.eq(journalId))

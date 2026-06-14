@@ -18,9 +18,4 @@ public class Category extends BaseEntity {
   @Column(name = "name")
   private String name;
 
-  // Foreign Keys
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "id_journal")
-  private Journal journal;
-
 }
