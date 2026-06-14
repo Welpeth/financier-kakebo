@@ -24,7 +24,7 @@ export default function LedgerEntryForm({ open, onClose, onSubmit, initial, jour
   const [loading, setLoading] = useState(false)
 
   const txOptions = transactions.map((t) => ({
-    label: `${t.description} — R$ ${Number(t.fee).toFixed(2)}`,
+    label: `${t.description} — R$ ${Number(t.amount).toFixed(2)}`,
     value: t.id,
   }))
 

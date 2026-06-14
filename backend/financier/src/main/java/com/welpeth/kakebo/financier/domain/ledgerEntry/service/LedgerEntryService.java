@@ -5,10 +5,10 @@ import com.welpeth.kakebo.financier.domain.ledgerEntry.dto.CreateLedgerEntryRequ
 import com.welpeth.kakebo.financier.domain.ledgerEntry.dto.UpdateLedgerEntryRequest;
 import com.welpeth.kakebo.financier.domain.ledgerEntry.entity.LedgerEntry;
 import com.welpeth.kakebo.financier.domain.ledgerEntry.repository.LedgerEntryRepository;
+import jakarta.persistence.NoResultException;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,7 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class LedgerEntryService {
 
   private final LedgerEntryRepository repository;
-  @Lazy
+
   private final JournalService journalService;
 
   public LedgerEntry create(CreateLedgerEntryRequest request) {
@@ -51,7 +51,7 @@ public class LedgerEntryService {
 
   public void delete(UUID id) {
     LedgerEntry entry = repository.findById(id)
-        .orElseThrow(() -> new jakarta.persistence.NoResultException("LedgerEntry não encontrado"));
+        .orElseThrow(() -> new NoResultException("Registro não encontrado"));
     UUID journalId = entry.getJournal().getId();
     repository.deleteById(id);
     journalService.recalculateTotal(journalId);
