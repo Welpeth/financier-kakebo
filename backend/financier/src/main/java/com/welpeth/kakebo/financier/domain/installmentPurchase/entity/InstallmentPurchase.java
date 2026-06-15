@@ -28,6 +28,9 @@ public class InstallmentPurchase extends BaseEntity {
   @Column(name = "interest_rate")
   private BigDecimal interestRate;
 
+  @Column(name = "total_amount_with_interest")
+  private BigDecimal totalAmountWithInterest;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "transaction_id", nullable = false)
   private Transaction transaction;

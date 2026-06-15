@@ -11,4 +11,6 @@ public interface InstallmentRepository extends JpaRepository<Installment, UUID>,
     InstallmentCustomRepository {
 
   List<Installment> findByInstallmentPurchaseId(UUID installmentPurchaseId);
+
+  void deleteByInstallmentPurchaseId(UUID installmentPurchaseId);
 }

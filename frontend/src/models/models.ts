@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 4.1.1 on 2026-06-13 21:55:48.
+// Generated using typescript-generator version 4.1.1 on 2026-06-14 23:13:37.
 
 export interface CreateAccountRequest {
     name: string;
@@ -37,6 +37,12 @@ export interface QAccount extends EntityPathBase<Account> {
     name: StringPath;
     transactions: ListPath<Transaction, QTransaction>;
     updatedAt: DateTimePath<Date>;
+}
+
+export interface AvailableLimitResponse {
+    creditLimit: number;
+    usedAmount: number;
+    availableLimit: number;
 }
 
 export interface CreateAccountCardRequest {
@@ -182,6 +188,87 @@ export interface QHolderAddressId extends BeanPath<HolderAddressId> {
     idHolder: ComparablePath<string>;
 }
 
+export interface CreateInstallmentListRequest {
+    installmentPurchase: InstallmentPurchase;
+    installmentNumber: number;
+    amount: number;
+    fee: number;
+    dueDate: Date;
+    installmentType: InstallmentType;
+}
+
+export interface CreateInstallmentRequest {
+    installmentPurchase: InstallmentPurchase;
+    installmentNumber: number;
+    amount: number;
+    dueDate: Date;
+}
+
+export interface UpdateInstallmentRequest {
+    id: string;
+    amount: number;
+    dueDate: Date;
+    paid: boolean;
+    paidAt: Date;
+}
+
+export interface Installment extends BaseEntity {
+    installmentNumber: number;
+    amount: number;
+    dueDate: Date;
+    paid: boolean;
+    paidAt: Date;
+    installmentPurchase: InstallmentPurchase;
+}
+
+export interface QInstallment extends EntityPathBase<Installment> {
+    _super: QBaseEntity;
+    amount: NumberPath<number>;
+    createdAt: DateTimePath<Date>;
+    createdBy: StringPath;
+    dueDate: DatePath<Date>;
+    id: ComparablePath<string>;
+    installmentNumber: NumberPath<number>;
+    installmentPurchase: QInstallmentPurchase;
+    paid: BooleanPath;
+    paidAt: DatePath<Date>;
+    updatedAt: DateTimePath<Date>;
+}
+
+export interface CreateInstallmentPurchaseRequest {
+    transaction: Transaction;
+    totalAmount: number;
+    installmentCount: number;
+    interestRate: number;
+}
+
+export interface UpdateInstallmentPurchaseRequest {
+    id: string;
+    totalAmount: number;
+    installmentCount: number;
+    interestRate: number;
+}
+
+export interface InstallmentPurchase extends BaseEntity {
+    totalAmount: number;
+    interestRate: number;
+    totalAmountWithInterest: number;
+    transaction: Transaction;
+}
+
+export interface QInstallmentPurchase extends EntityPathBase<InstallmentPurchase> {
+    _super: QBaseEntity;
+    createdAt: DateTimePath<Date>;
+    createdBy: StringPath;
+    id: ComparablePath<string>;
+    installments: ListPath<Installment, QInstallment>;
+    interestRate: NumberPath<number>;
+    totalAmount: NumberPath<number>;
+    totalAmountWithInterest: NumberPath<number>;
+    transaction: QTransaction;
+    updatedAt: DateTimePath<Date>;
+}
+
 export interface CreateJournalRequest {
     name: string;
 }
@@ -243,6 +330,38 @@ export interface QLedgerEntry extends EntityPathBase<LedgerEntry> {
     updatedAt: DateTimePath<Date>;
 }
 
+export interface CreateSubscriptionRequest {
+    transaction: Transaction;
+    frequency: SubscriptionFrequency;
+    nextChargeDate: Date;
+}
+
+export interface UpdateSubscriptionRequest {
+    id: string;
+    frequency: SubscriptionFrequency;
+    nextChargeDate: Date;
+    active: boolean;
+}
+
+export interface QSubscription extends EntityPathBase<Subscription> {
+    _super: QBaseEntity;
+    active: BooleanPath;
+    createdAt: DateTimePath<Date>;
+    createdBy: StringPath;
+    frequency: EnumPath<SubscriptionFrequency>;
+    id: ComparablePath<string>;
+    nextChargeDate: DatePath<Date>;
+    transaction: QTransaction;
+    updatedAt: DateTimePath<Date>;
+}
+
+export interface Subscription extends BaseEntity {
+    frequency: SubscriptionFrequency;
+    nextChargeDate: Date;
+    active: boolean;
+    transaction: Transaction;
+}
+
 export interface CreateTransactionRequest {
     account: Account;
     accountCard: AccountCard;
@@ -252,6 +371,9 @@ export interface CreateTransactionRequest {
     fee: number;
     installment: number;
     description: string;
+    dueDate: Date;
+    frequency: SubscriptionFrequency;
+    installmentType: InstallmentType;
 }
 
 export interface UpdateTransactionRequest {
@@ -264,6 +386,7 @@ export interface UpdateTransactionRequest {
     fee: number;
     installment: number;
     description: string;
+    installmentType: InstallmentType;
 }
 
 export interface QTransaction extends EntityPathBase<Transaction> {
@@ -278,7 +401,9 @@ export interface QTransaction extends EntityPathBase<Transaction> {
     fee: NumberPath<number>;
     id: ComparablePath<string>;
     installment: NumberPath<number>;
+    installmentType: EnumPath<InstallmentType>;
     ledgerEntries: ListPath<LedgerEntry, QLedgerEntry>;
+    subscription: BooleanPath;
     updatedAt: DateTimePath<Date>;
 }
 
@@ -288,6 +413,8 @@ export interface Transaction extends BaseEntity {
     installment: number;
     type: TransactionType;
     description: string;
+    subscription: boolean;
+    installmentType: InstallmentType;
     account: Account;
     accountCard: AccountCard;
     category: Category;
@@ -351,6 +478,12 @@ export interface AnnotatedElement {
 export interface Serializable {
 }
 
+export interface DatePath<T> extends DateExpression<T>, Path<T> {
+}
+
+export interface EnumPath<T> extends EnumExpression<T>, Path<T> {
+}
+
 export interface StringExpression extends LiteralExpression<string> {
 }
 
@@ -396,10 +529,10 @@ export interface Predicate extends Expression<boolean> {
 }
 
 export interface TypeVariable<D> extends Type, AnnotatedElement {
-    genericDeclaration: D;
-    annotatedBounds: AnnotatedType[];
     name: string;
     bounds: Type[];
+    genericDeclaration: D;
+    annotatedBounds: AnnotatedType[];
 }
 
 export interface OfField<F> extends TypeDescriptor {
@@ -411,12 +544,18 @@ export interface Expression<T> extends Serializable {
     type: Class<T>;
 }
 
+export interface DateExpression<T> extends TemporalExpression<T> {
+}
+
+export interface EnumExpression<T> extends LiteralExpression<T> {
+}
+
 export interface LiteralExpression<T> extends ComparableExpression<T> {
 }
 
 export interface AnnotatedType extends AnnotatedElement {
-    annotatedOwnerType: AnnotatedType;
     type: Type;
+    annotatedOwnerType: AnnotatedType;
 }
 
 export interface TypeDescriptor {
@@ -450,6 +589,10 @@ export interface ParameterizedExpression<T> extends Expression<T> {
 export type AccountType = "CHECKING" | "SAVINGS";
 
 export type CardType = "CREDIT" | "DEBIT";
+
+export type InstallmentType = "PRICE" | "SAC";
+
+export type SubscriptionFrequency = "DAILY" | "WEEKLY" | "MONTHLY" | "QUARTERLY" | "YEARLY";
 
 export type TransactionType = "CASH" | "DEBIT" | "CREDIT" | "PIX";
 

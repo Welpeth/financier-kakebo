@@ -6,6 +6,7 @@ import com.welpeth.kakebo.financier.domain.account.entity.Account;
 import com.welpeth.kakebo.financier.domain.accountCard.entity.AccountCard;
 import com.welpeth.kakebo.financier.domain.category.entity.Category;
 import com.welpeth.kakebo.financier.domain.ledgerEntry.entity.LedgerEntry;
+import com.welpeth.kakebo.financier.domain.transaction.type.InstallmentType;
 import com.welpeth.kakebo.financier.domain.transaction.type.TransactionType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -43,6 +44,10 @@ public class Transaction extends BaseEntity {
 
   @Column(name = "is_subscription")
   private boolean subscription;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "installment_type")
+  private InstallmentType installmentType;
 
   // Foreign Keys
   @ManyToOne(fetch = FetchType.LAZY)

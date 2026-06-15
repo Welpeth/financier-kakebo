@@ -34,6 +34,11 @@ public class InstallmentController {
     return ResponseEntity.ok(service.getByPurchase(installmentPurchaseId));
   }
 
+  @GetMapping("/by-card/{cardId}")
+  public ResponseEntity<List<Installment>> getByCard(@PathVariable UUID cardId) {
+    return ResponseEntity.ok(service.getByCard(cardId));
+  }
+
   @PostMapping
   public ResponseEntity<Installment> create(@RequestBody CreateInstallmentRequest request) {
     return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request));

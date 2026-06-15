@@ -4,6 +4,7 @@ import com.welpeth.kakebo.financier.domain.account.entity.Account;
 import com.welpeth.kakebo.financier.domain.accountCard.entity.AccountCard;
 import com.welpeth.kakebo.financier.domain.category.entity.Category;
 import com.welpeth.kakebo.financier.domain.subscription.type.SubscriptionFrequency;
+import com.welpeth.kakebo.financier.domain.transaction.type.InstallmentType;
 import com.welpeth.kakebo.financier.domain.transaction.type.TransactionType;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -18,8 +19,8 @@ public record CreateTransactionRequest(
     Integer installment,
     String description,
     LocalDate dueDate,
-    boolean active,
-    SubscriptionFrequency frequency
+    SubscriptionFrequency frequency,
+    InstallmentType installmentType
 ) {
 
 }

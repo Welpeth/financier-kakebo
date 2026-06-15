@@ -1,5 +1,5 @@
 import api from '@/lib/api'
-import type { AccountCard, CreateAccountCardRequest, UpdateAccountCardRequest } from '@/models/models'
+import type { AccountCard, AvailableLimitResponse, CreateAccountCardRequest, UpdateAccountCardRequest } from '@/models/models'
 
 export const accountCardService = {
   async findAll(): Promise<AccountCard[]> {
@@ -24,6 +24,11 @@ export const accountCardService = {
 
   async update(payload: UpdateAccountCardRequest): Promise<void> {
     await api.patch('/account-card', payload)
+  },
+
+  async getAvailableLimit(id: string): Promise<AvailableLimitResponse> {
+    const { data } = await api.get<AvailableLimitResponse>(`/account-card/${id}/available-limit`)
+    return data
   },
 
   async remove(id: string): Promise<void> {
