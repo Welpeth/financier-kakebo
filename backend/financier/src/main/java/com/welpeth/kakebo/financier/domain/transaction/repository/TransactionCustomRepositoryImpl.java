@@ -27,6 +27,7 @@ public class TransactionCustomRepositoryImpl extends BaseCustomRepositoryImpl<Tr
         .set(transaction.amount, request.amount())
         .set(transaction.fee, request.fee() != null ? request.fee() : java.math.BigDecimal.ZERO)
         .set(transaction.installment, request.installment())
+        .set(transaction.installmentType, request.installmentType())
         .set(transaction.account, request.account())
         .set(transaction.accountCard, request.accountCard())
         .set(transaction.category, request.category())

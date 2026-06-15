@@ -5,11 +5,15 @@ import com.welpeth.kakebo.financier.base.BaseCustomRepositoryImpl;
 import com.welpeth.kakebo.financier.domain.subscription.dto.UpdateSubscriptionRequest;
 import com.welpeth.kakebo.financier.domain.subscription.entity.Subscription;
 import com.welpeth.kakebo.financier.domain.subscription.entity.QSubscription;
+import com.welpeth.kakebo.financier.domain.transaction.entity.QTransaction;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -36,5 +40,22 @@ public class SubscriptionCustomRepositoryImpl extends BaseCustomRepositoryImpl<S
       throw new NoResultException("Subscription não encontrada");
     }
     entityManager.clear();
+  }
+
+  @Override
+  public BigDecimal sumActiveAmountByCardId(UUID cardId, LocalDate endOfMonth) {
+    QSubscription subscription = QSubscription.subscription;
+    QTransaction transaction = QTransaction.transaction;
+
+    BigDecimal total = getQueryFactory()
+        .select(transaction.amount.sum())
+        .from(subscription)
+        .join(subscription.transaction, transaction)
+        .where(transaction.accountCard.id.eq(cardId)
+            .and(subscription.active.isTrue())
+            .and(subscription.nextChargeDate.loe(endOfMonth)))
+        .fetchOne();
+
+    return total != null ? total : BigDecimal.ZERO;
   }
 }

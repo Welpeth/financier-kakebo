@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import Table from '@/components/ui/Table'
 import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
@@ -11,7 +12,6 @@ import { useTransactions } from '../hooks/useTransactions'
 import { useAccounts } from '@/features/accounts/hooks/useAccounts'
 import { accountCardService } from '@/services/accountCard.service'
 import { categoryService } from '@/services/category.service'
-import { useEffect } from 'react'
 import type { Transaction, CreateTransactionRequest, UpdateTransactionRequest, AccountCard, Category } from '@/models/models'
 
 const typeLabel: Record<string, string> = { CASH: 'Dinheiro', DEBIT: 'Débito', CREDIT: 'Crédito', PIX: 'PIX' }
@@ -23,6 +23,7 @@ const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' 
 export default function TransactionList() {
   const { transactions, loading, create, update, remove } = useTransactions()
   const { accounts } = useAccounts()
+  const router = useRouter()
   const [cards, setCards] = useState<AccountCard[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [formOpen, setFormOpen] = useState(false)
@@ -61,11 +62,11 @@ export default function TransactionList() {
           <Table.Head>
             <Table.Th>Descrição</Table.Th>
             <Table.Th>Tipo</Table.Th>
+            <Table.Th>Parcelas</Table.Th>
             <Table.Th>Conta</Table.Th>
             <Table.Th>Categoria</Table.Th>
             <Table.Th>Valor</Table.Th>
-            <Table.Th>Taxa</Table.Th>
-            <Table.Th>Parcelas</Table.Th>
+            <Table.Th>Juros</Table.Th>
             <Table.Th>Data</Table.Th>
             <Table.Th className="text-right">Ações</Table.Th>
           </Table.Head>
@@ -76,16 +77,30 @@ export default function TransactionList() {
                 <Table.Td>
                   <Badge variant={typeBadge[tx.type] ?? 'neutral'}>{typeLabel[tx.type] ?? tx.type}</Badge>
                 </Table.Td>
+                <Table.Td>
+                  {tx.type === 'CREDIT' && tx.subscription && (
+                    <Badge variant="neutral">Assinatura</Badge>
+                  )}
+                  {tx.type === 'CREDIT' && !tx.subscription && tx.installment > 1 && (
+                    <span className="text-sm text-[var(--muted)]">{tx.installment}x</span>
+                  )}
+                </Table.Td>
                 <Table.Td className="text-[var(--muted)]">{tx.account?.name ?? '—'}</Table.Td>
                 <Table.Td className="text-[var(--muted)]">{tx.category?.name ?? '—'}</Table.Td>
                 <Table.Td className="font-medium">{fmt.format(tx.amount)}</Table.Td>
-                <Table.Td className="text-[var(--muted)]">{fmt.format(tx.fee ?? 0)}</Table.Td>
-                <Table.Td className="text-[var(--muted)]">{tx.installment}x</Table.Td>
+                <Table.Td className="text-[var(--muted)]">
+                  {tx.fee ? `${Number(tx.fee).toFixed(2)}%` : '—'}
+                </Table.Td>
                 <Table.Td className="text-[var(--muted)]">
                   {new Date(tx.createdAt).toLocaleDateString('pt-BR')}
                 </Table.Td>
                 <Table.Td className="text-right">
                   <div className="flex justify-end gap-2">
+                    {tx.type === 'CREDIT' && !tx.subscription && (
+                      <Button size="sm" variant="ghost" onClick={() => router.push(`/transactions/${tx.id}`)}>
+                        Ver Parcelas
+                      </Button>
+                    )}
                     <Button size="sm" variant="ghost" onClick={() => openEdit(tx)}>Editar</Button>
                     <Button size="sm" variant="danger" onClick={() => remove(tx.id)}>Excluir</Button>
                   </div>

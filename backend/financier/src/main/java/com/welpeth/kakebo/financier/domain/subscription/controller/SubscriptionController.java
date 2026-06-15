@@ -45,6 +45,11 @@ public class SubscriptionController {
     return ResponseEntity.noContent().build();
   }
 
+  @PatchMapping("/{id}/pay")
+  public ResponseEntity<Subscription> payCurrentPeriod(@PathVariable UUID id) {
+    return ResponseEntity.ok(service.payCurrentPeriod(id));
+  }
+
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> delete(@PathVariable UUID id) {
     service.delete(id);

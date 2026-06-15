@@ -1,6 +1,7 @@
 package com.welpeth.kakebo.financier.domain.accountCard.controller;
 
 import com.welpeth.kakebo.financier.config.ApiPath;
+import com.welpeth.kakebo.financier.domain.accountCard.dto.AvailableLimitResponse;
 import com.welpeth.kakebo.financier.domain.accountCard.dto.CreateAccountCardRequest;
 import com.welpeth.kakebo.financier.domain.accountCard.dto.UpdateAccountCardRequest;
 import com.welpeth.kakebo.financier.domain.accountCard.entity.AccountCard;
@@ -39,6 +40,11 @@ public class AccountCardController {
   @GetMapping("/list/{accountId}")
   public ResponseEntity<List<AccountCard>> getListByAccount(@PathVariable UUID accountId) {
     return ResponseEntity.status(HttpStatus.OK).body(accountCardService.getListByAccount(accountId));
+  }
+
+  @GetMapping("/{id}/available-limit")
+  public ResponseEntity<AvailableLimitResponse> getAvailableLimit(@PathVariable UUID id) {
+    return ResponseEntity.ok(accountCardService.getAvailableLimit(id));
   }
 
   @PostMapping

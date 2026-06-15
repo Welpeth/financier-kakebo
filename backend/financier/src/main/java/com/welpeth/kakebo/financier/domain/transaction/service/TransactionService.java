@@ -1,8 +1,12 @@
 package com.welpeth.kakebo.financier.domain.transaction.service;
 
+import com.welpeth.kakebo.financier.domain.accountCard.dto.AvailableLimitResponse;
+import com.welpeth.kakebo.financier.domain.accountCard.service.AccountCardService;
 import com.welpeth.kakebo.financier.domain.installment.dto.CreateInstallmentListRequest;
+import com.welpeth.kakebo.financier.domain.installment.entity.Installment;
 import com.welpeth.kakebo.financier.domain.installment.service.InstallmentService;
 import com.welpeth.kakebo.financier.domain.installmentPurchase.dto.CreateInstallmentPurchaseRequest;
+import com.welpeth.kakebo.financier.domain.installmentPurchase.dto.UpdateInstallmentPurchaseRequest;
 import com.welpeth.kakebo.financier.domain.installmentPurchase.entity.InstallmentPurchase;
 import com.welpeth.kakebo.financier.domain.installmentPurchase.service.InstallmentPurchaseService;
 import com.welpeth.kakebo.financier.domain.subscription.dto.CreateSubscriptionRequest;
@@ -12,7 +16,10 @@ import com.welpeth.kakebo.financier.domain.transaction.dto.UpdateTransactionRequ
 import com.welpeth.kakebo.financier.domain.transaction.entity.Transaction;
 import com.welpeth.kakebo.financier.domain.transaction.repository.TransactionRepository;
 import com.welpeth.kakebo.financier.domain.transaction.type.TransactionType;
+import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +35,7 @@ public class TransactionService {
   private final InstallmentService installmentService;
   private final InstallmentPurchaseService installmentPurchaseService;
   private final SubscriptionService subscriptionService;
+  private final AccountCardService accountCardService;
 
   public Transaction get(UUID id) {
     return repository.getReferenceById(id);
@@ -46,6 +54,27 @@ public class TransactionService {
           "Valor mínimo da transação é R$ 1,00");
     }
 
+    if (request.type() == TransactionType.CREDIT) {
+      if (request.accountCard() == null) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+            "Cartão de crédito obrigatório para transações de crédito");
+      }
+
+      BigDecimal totalToCommit = request.frequency() != null
+          ? request.amount()
+          : InstallmentService.calculateTotalWithInterest(
+              request.amount(),
+              request.installment() != null ? request.installment() : 1,
+              request.fee() != null ? request.fee() : BigDecimal.ZERO,
+              request.installmentType());
+
+      AvailableLimitResponse limit = accountCardService.getAvailableLimit(request.accountCard().getId());
+      if (totalToCommit.compareTo(limit.availableLimit()) > 0) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+            String.format("Limite insuficiente. Disponível: R$ %.2f", limit.availableLimit()));
+      }
+    }
+
     Transaction transaction = new Transaction();
     transaction.setId(UUID.randomUUID());
     transaction.setAccount(request.account());
@@ -57,6 +86,7 @@ public class TransactionService {
     transaction.setInstallment(request.installment());
     transaction.setType(request.type());
     transaction.setSubscription(request.frequency() != null);
+    transaction.setInstallmentType(request.installmentType());
 
     Transaction saved = repository.save(transaction);
 
@@ -84,9 +114,11 @@ public class TransactionService {
     );
     installmentService.createList(
         new CreateInstallmentListRequest(purchase, transaction.getInstallment(),
-            transaction.getAmount(), transaction.getFee(), request.dueDate()));
+            transaction.getAmount(), transaction.getFee(), request.dueDate(),
+            request.installmentType()));
   }
 
+  @Transactional
   public void update(UpdateTransactionRequest request) {
     if (request.category() == null || request.category().getId() == null) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Categoria obrigatória");
@@ -95,7 +127,33 @@ public class TransactionService {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
           "Valor mínimo da transação é R$ 1,00");
     }
+
     repository.update(request);
+
+    if (request.type() == TransactionType.CREDIT) {
+      recalculateInstallments(request);
+    }
+  }
+
+  private void recalculateInstallments(UpdateTransactionRequest request) {
+    List<InstallmentPurchase> purchases = installmentPurchaseService.getByTransaction(request.id());
+    if (purchases.isEmpty()) return;
+
+    InstallmentPurchase purchase = purchases.get(0);
+
+    LocalDate firstDueDate = installmentService.getByPurchase(purchase.getId()).stream()
+        .min(Comparator.comparingInt(Installment::getInstallmentNumber))
+        .map(Installment::getDueDate)
+        .orElse(LocalDate.now());
+
+    installmentPurchaseService.update(new UpdateInstallmentPurchaseRequest(
+        purchase.getId(), request.amount(), request.installment(), request.fee()));
+
+    installmentService.deleteByPurchase(purchase.getId());
+
+    installmentService.createList(new CreateInstallmentListRequest(
+        purchase, request.installment(), request.amount(), request.fee(), firstDueDate,
+        request.installmentType()));
   }
 
   public void delete(UUID id) {
