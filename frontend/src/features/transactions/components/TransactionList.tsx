@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { Receipt, Pencil, Trash2 } from 'lucide-react'
 import Table from '@/components/ui/Table'
 import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
@@ -103,11 +104,11 @@ export default function TransactionList() {
                   <div className="flex justify-end gap-2">
                     {tx.type === 'CREDIT' && !tx.subscription && (
                       <Button size="sm" variant="ghost" onClick={() => router.push(`/transactions/${tx.id}`)}>
-                        Ver Parcelas
+                        <Receipt className="h-3.5 w-3.5 mr-1" />Ver Parcelas
                       </Button>
                     )}
-                    <Button size="sm" variant="ghost" onClick={() => openEdit(tx)}>Editar</Button>
-                    <Button size="sm" variant="danger" onClick={() => confirm({ message: `Excluir a transação "${tx.description}"? Esta ação não pode ser desfeita.`, onConfirm: () => remove(tx.id) })}>Excluir</Button>
+                    <Button size="sm" variant="ghost" onClick={() => openEdit(tx)}><Pencil className="h-3.5 w-3.5 mr-1" />Editar</Button>
+                    <Button size="sm" variant="danger" onClick={() => confirm({ message: `Excluir a transação "${tx.description}"? Esta ação não pode ser desfeita.`, onConfirm: () => remove(tx.id) })}><Trash2 className="h-3.5 w-3.5 mr-1" />Excluir</Button>
                   </div>
                 </Table.Td>
               </Table.Tr>

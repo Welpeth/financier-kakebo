@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { BookOpen, Pencil, Trash2 } from 'lucide-react'
 import Table from '@/components/ui/Table'
 import Button from '@/components/ui/Button'
 import Spinner from '@/components/ui/Spinner'
@@ -67,9 +68,9 @@ export default function JournalList() {
                 </Table.Td>
                 <Table.Td className="text-right">
                   <div className="flex justify-end gap-2">
-                    <Button size="sm" variant="ghost" onClick={() => router.push(`/journals/${j.id}`)}>Ver Entradas</Button>
-                    <Button size="sm" variant="ghost" onClick={() => openEdit(j)}>Editar</Button>
-                    <Button size="sm" variant="danger" onClick={() => confirm({ message: `Excluir o diário "${j.name}"? Todos os lançamentos serão removidos.`, onConfirm: () => remove(j.id) })}>Excluir</Button>
+                    <Button size="sm" variant="ghost" onClick={() => router.push(`/journals/${j.id}`)}><BookOpen className="h-3.5 w-3.5 mr-1" />Ver Entradas</Button>
+                    <Button size="sm" variant="ghost" onClick={() => openEdit(j)}><Pencil className="h-3.5 w-3.5 mr-1" />Editar</Button>
+                    <Button size="sm" variant="danger" onClick={() => confirm({ message: `Excluir o diário "${j.name}"? Todos os lançamentos serão removidos.`, onConfirm: () => remove(j.id) })}><Trash2 className="h-3.5 w-3.5 mr-1" />Excluir</Button>
                   </div>
                 </Table.Td>
               </Table.Tr>

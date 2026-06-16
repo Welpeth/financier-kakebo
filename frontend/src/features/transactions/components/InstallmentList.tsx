@@ -1,5 +1,6 @@
 'use client'
 
+import { CheckCircle } from 'lucide-react'
 import Table from '@/components/ui/Table'
 import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
@@ -93,7 +94,7 @@ export default function InstallmentList({ transaction }: InstallmentListProps) {
                 <Table.Td className="text-right">
                   {!inst.paid && (
                     <Button size="sm" variant="ghost" onClick={() => confirm({ title: 'Marcar parcela como paga', message: `Confirmar pagamento da ${inst.installmentNumber}ª parcela de ${fmt.format(inst.amount)}?`, confirmLabel: 'Marcar paga', variant: 'warning', onConfirm: () => pay(inst.id) })}>
-                      Marcar paga
+                      <CheckCircle className="h-3.5 w-3.5 mr-1" />Marcar paga
                     </Button>
                   )}
                 </Table.Td>
