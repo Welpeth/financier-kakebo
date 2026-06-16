@@ -7,6 +7,7 @@ import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
 import Spinner from '@/components/ui/Spinner'
 import EmptyState from '@/components/ui/EmptyState'
+import { useConfirm, ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import AccountCardForm from './AccountCardForm'
 import { useAccountCards } from '../hooks/useAccountCards'
 import { accountCardService } from '@/services/accountCard.service'
@@ -21,6 +22,7 @@ interface AccountCardListProps {
 
 export default function AccountCardList({ account }: AccountCardListProps) {
   const { cards, loading, create, update, remove } = useAccountCards(account.id)
+  const { confirm, confirmState, closeConfirm } = useConfirm()
   const [formOpen, setFormOpen] = useState(false)
   const [editing, setEditing] = useState<AccountCard | null>(null)
   const [limits, setLimits] = useState<Record<string, AvailableLimitResponse>>({})
@@ -116,7 +118,7 @@ export default function AccountCardList({ account }: AccountCardListProps) {
                         </Button>
                       )}
                       <Button size="sm" variant="ghost" onClick={() => openEdit(card)}>Editar</Button>
-                      <Button size="sm" variant="danger" onClick={() => remove(card.id)}>Excluir</Button>
+                      <Button size="sm" variant="danger" onClick={() => confirm({ message: `Excluir o cartão "${card.name}"? Esta ação não pode ser desfeita.`, onConfirm: () => remove(card.id) })}>Excluir</Button>
                     </div>
                   </Table.Td>
                 </Table.Tr>
@@ -132,6 +134,7 @@ export default function AccountCardList({ account }: AccountCardListProps) {
         onSubmit={handleSubmit}
         initial={editing}
       />
+      <ConfirmDialog state={confirmState} onClose={closeConfirm} />
     </>
   )
 }

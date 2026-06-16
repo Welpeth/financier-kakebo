@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 4.1.1 on 2026-06-14 23:13:37.
+// Generated using typescript-generator version 4.1.1 on 2026-06-15 20:25:52.
 
 export interface CreateAccountRequest {
     name: string;
@@ -457,8 +457,13 @@ export interface Class<T> extends Serializable, GenericDeclaration, Type, Annota
 
 export interface Path<T> extends Expression<T> {
     root: Path<any>;
-    metadata: PathMetadata;
     annotatedElement: AnnotatedElement;
+    metadata: PathMetadata;
+}
+
+export interface AnnotatedElement {
+    annotations: Annotation[];
+    declaredAnnotations: Annotation[];
 }
 
 export interface PathMetadata extends Serializable {
@@ -468,11 +473,6 @@ export interface PathMetadata extends Serializable {
     pathType: PathType;
     name: string;
     root: boolean;
-}
-
-export interface AnnotatedElement {
-    annotations: Annotation[];
-    declaredAnnotations: Annotation[];
 }
 
 export interface Serializable {

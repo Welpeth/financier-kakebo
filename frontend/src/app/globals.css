@@ -17,6 +17,8 @@
     --warning-light: #fffbeb;
     --success: #16a34a;
     --success-light: #f0fdf4;
+    --table-header: #f3f4f6;
+    --table-row-alt: #f9fafb;
     --radius: 0.5rem;
     --radius-lg: 0.75rem;
     --sidebar-width: 72px;
@@ -24,16 +26,18 @@
   }
 
   html.dark {
-    --surface: #0d1f16;
-    --surface-hover: #142b1e;
-    --card: #111f17;
-    --border: #1e3a2b;
-    --text: #e8f3ed;
-    --muted: #7fa88f;
-    --primary-light: #1a3526;
-    --danger-light: #2d0f0f;
-    --warning-light: #2d2008;
-    --success-light: #0a2218;
+    --surface: #181818;
+    --surface-hover: #252525;
+    --card: #1f1f1f;
+    --border: #333333;
+    --text: #e4e4e4;
+    --muted: #8a8a8a;
+    --primary-light: #1a2b20;
+    --danger-light: #2a1212;
+    --warning-light: #2a1e08;
+    --success-light: #0f1f0f;
+    --table-header: #2a2a2a;
+    --table-row-alt: #252525;
   }
 
   * {

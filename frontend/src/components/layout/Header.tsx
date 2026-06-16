@@ -10,8 +10,8 @@ export default function Header() {
       className="fixed top-0 left-0 right-0 z-40 flex h-[var(--header-height)] items-center gap-4 border-b border-[var(--border)] bg-[var(--card)] px-4"
     >
       {/* Logo */}
-      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--primary)] text-white font-bold text-sm select-none shrink-0">
-        K
+      <div className="flex h-8 w-8 items-center justify-center shrink-0 select-none">
+        <img src="/icons/kakebo_icon.svg" alt="Kakebo" className="h-8 w-8 object-contain" />
       </div>
 
       {/* Search */}

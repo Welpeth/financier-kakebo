@@ -9,6 +9,8 @@ import com.welpeth.kakebo.financier.domain.installmentPurchase.dto.CreateInstall
 import com.welpeth.kakebo.financier.domain.installmentPurchase.dto.UpdateInstallmentPurchaseRequest;
 import com.welpeth.kakebo.financier.domain.installmentPurchase.entity.InstallmentPurchase;
 import com.welpeth.kakebo.financier.domain.installmentPurchase.service.InstallmentPurchaseService;
+import com.welpeth.kakebo.financier.domain.ledgerEntry.dto.CreateLedgerEntryRequest;
+import com.welpeth.kakebo.financier.domain.ledgerEntry.service.LedgerEntryService;
 import com.welpeth.kakebo.financier.domain.subscription.dto.CreateSubscriptionRequest;
 import com.welpeth.kakebo.financier.domain.subscription.service.SubscriptionService;
 import com.welpeth.kakebo.financier.domain.transaction.dto.CreateTransactionRequest;
@@ -36,6 +38,7 @@ public class TransactionService {
   private final InstallmentPurchaseService installmentPurchaseService;
   private final SubscriptionService subscriptionService;
   private final AccountCardService accountCardService;
+  private final LedgerEntryService ledgerEntryService;
 
   public Transaction get(UUID id) {
     return repository.getReferenceById(id);
@@ -68,7 +71,8 @@ public class TransactionService {
               request.fee() != null ? request.fee() : BigDecimal.ZERO,
               request.installmentType());
 
-      AvailableLimitResponse limit = accountCardService.getAvailableLimit(request.accountCard().getId());
+      AvailableLimitResponse limit = accountCardService.getAvailableLimit(
+          request.accountCard().getId());
       if (totalToCommit.compareTo(limit.availableLimit()) > 0) {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
             String.format("Limite insuficiente. Disponível: R$ %.2f", limit.availableLimit()));
@@ -89,6 +93,12 @@ public class TransactionService {
     transaction.setInstallmentType(request.installmentType());
 
     Transaction saved = repository.save(transaction);
+
+    if (request.journal() != null) {
+      ledgerEntryService.create(new CreateLedgerEntryRequest(
+          saved.getDescription(), null, request.journal(), saved
+      ));
+    }
 
     if (saved.getType() == TransactionType.CREDIT) {
       if (saved.isSubscription()) {
@@ -137,7 +147,9 @@ public class TransactionService {
 
   private void recalculateInstallments(UpdateTransactionRequest request) {
     List<InstallmentPurchase> purchases = installmentPurchaseService.getByTransaction(request.id());
-    if (purchases.isEmpty()) return;
+    if (purchases.isEmpty()) {
+      return;
+    }
 
     InstallmentPurchase purchase = purchases.get(0);
 

@@ -5,6 +5,7 @@ import Table from '@/components/ui/Table'
 import Button from '@/components/ui/Button'
 import Spinner from '@/components/ui/Spinner'
 import EmptyState from '@/components/ui/EmptyState'
+import { useConfirm, ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import CategoryForm from './CategoryForm'
 import { useCategories } from '../hooks/useCategories'
 import { useJournals } from '@/features/journals/hooks/useJournals'
@@ -12,6 +13,7 @@ import type { Category, CreateCategoryRequest, UpdateCategoryRequest } from '@/m
 
 export default function CategoryList() {
   const { categories, loading, create, update, remove } = useCategories()
+  const { confirm, confirmState, closeConfirm } = useConfirm()
   const [formOpen, setFormOpen] = useState(false)
   const [editing, setEditing] = useState<Category | null>(null)
 
@@ -55,7 +57,7 @@ export default function CategoryList() {
                 <Table.Td className="text-right">
                   <div className="flex justify-end gap-2">
                     <Button size="sm" variant="ghost" onClick={() => openEdit(cat)}>Editar</Button>
-                    <Button size="sm" variant="danger" onClick={() => remove(cat.id)}>Excluir</Button>
+                    <Button size="sm" variant="danger" onClick={() => confirm({ message: `Excluir a categoria "${cat.name}"? Esta ação não pode ser desfeita.`, onConfirm: () => remove(cat.id) })}>Excluir</Button>
                   </div>
                 </Table.Td>
               </Table.Tr>
@@ -70,6 +72,7 @@ export default function CategoryList() {
         onSubmit={handleSubmit}
         initial={editing}
       />
+      <ConfirmDialog state={confirmState} onClose={closeConfirm} />
     </>
   )
 }
