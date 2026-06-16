@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { FileText, Pencil, Trash2 } from 'lucide-react'
 import Table from '@/components/ui/Table'
 import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
@@ -114,11 +115,11 @@ export default function AccountCardList({ account }: AccountCardListProps) {
                     <div className="flex justify-end gap-2">
                       {card.type === 'CREDIT' && (
                         <Button size="sm" variant="ghost" onClick={() => router.push(`/accounts/${account.id}/cards/${card.id}`)}>
-                          Ver Faturas
+                          <FileText className="h-3.5 w-3.5 mr-1" />Ver Faturas
                         </Button>
                       )}
-                      <Button size="sm" variant="ghost" onClick={() => openEdit(card)}>Editar</Button>
-                      <Button size="sm" variant="danger" onClick={() => confirm({ message: `Excluir o cartão "${card.name}"? Esta ação não pode ser desfeita.`, onConfirm: () => remove(card.id) })}>Excluir</Button>
+                      <Button size="sm" variant="ghost" onClick={() => openEdit(card)}><Pencil className="h-3.5 w-3.5 mr-1" />Editar</Button>
+                      <Button size="sm" variant="danger" onClick={() => confirm({ message: `Excluir o cartão "${card.name}"? Esta ação não pode ser desfeita.`, onConfirm: () => remove(card.id) })}><Trash2 className="h-3.5 w-3.5 mr-1" />Excluir</Button>
                     </div>
                   </Table.Td>
                 </Table.Tr>

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { ArrowUpRight, Pencil, Trash2 } from 'lucide-react'
 import Table from '@/components/ui/Table'
 import Button from '@/components/ui/Button'
 import Spinner from '@/components/ui/Spinner'
@@ -80,11 +81,11 @@ export default function LedgerEntryList({ journal, transactions, onTotalChange }
                   <div className="flex justify-end gap-2">
                     {entry.transaction?.id && (
                       <Button size="sm" variant="ghost" onClick={() => router.push(`/transactions/${entry.transaction.id}`)}>
-                        Ver Transação
+                        <ArrowUpRight className="h-3.5 w-3.5 mr-1" />Ver Transação
                       </Button>
                     )}
-                    <Button size="sm" variant="ghost" onClick={() => openEdit(entry)}>Editar</Button>
-                    <Button size="sm" variant="danger" onClick={() => confirm({ message: `Excluir o lançamento "${entry.name}"? Esta ação não pode ser desfeita.`, onConfirm: () => handleRemove(entry.id) })}>Excluir</Button>
+                    <Button size="sm" variant="ghost" onClick={() => openEdit(entry)}><Pencil className="h-3.5 w-3.5 mr-1" />Editar</Button>
+                    <Button size="sm" variant="danger" onClick={() => confirm({ message: `Excluir o lançamento "${entry.name}"? Esta ação não pode ser desfeita.`, onConfirm: () => handleRemove(entry.id) })}><Trash2 className="h-3.5 w-3.5 mr-1" />Excluir</Button>
                   </div>
                 </Table.Td>
               </Table.Tr>

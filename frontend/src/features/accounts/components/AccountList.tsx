@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { CreditCard, Pencil, Trash2 } from 'lucide-react'
 import Table from '@/components/ui/Table'
 import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
@@ -68,9 +69,9 @@ export default function AccountList() {
                 </Table.Td>
                 <Table.Td className="text-right">
                   <div className="flex justify-end gap-2">
-                    <Button size="sm" variant="ghost" onClick={() => router.push(`/accounts/${acc.id}`)}>Cartões</Button>
-                    <Button size="sm" variant="ghost" onClick={() => openEdit(acc)}>Editar</Button>
-                    <Button size="sm" variant="danger" onClick={() => confirm({ message: `Excluir a conta "${acc.name}"? Esta ação não pode ser desfeita.`, onConfirm: () => remove(acc.id) })}>Excluir</Button>
+                    <Button size="sm" variant="ghost" onClick={() => router.push(`/accounts/${acc.id}`)}><CreditCard className="h-3.5 w-3.5 mr-1" />Cartões</Button>
+                    <Button size="sm" variant="ghost" onClick={() => openEdit(acc)}><Pencil className="h-3.5 w-3.5 mr-1" />Editar</Button>
+                    <Button size="sm" variant="danger" onClick={() => confirm({ message: `Excluir a conta "${acc.name}"? Esta ação não pode ser desfeita.`, onConfirm: () => remove(acc.id) })}><Trash2 className="h-3.5 w-3.5 mr-1" />Excluir</Button>
                   </div>
                 </Table.Td>
               </Table.Tr>

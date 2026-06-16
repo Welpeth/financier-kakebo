@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { Pencil, Trash2 } from 'lucide-react'
 import Table from '@/components/ui/Table'
 import Button from '@/components/ui/Button'
 import Spinner from '@/components/ui/Spinner'
@@ -56,8 +57,8 @@ export default function CategoryList() {
                 </Table.Td>
                 <Table.Td className="text-right">
                   <div className="flex justify-end gap-2">
-                    <Button size="sm" variant="ghost" onClick={() => openEdit(cat)}>Editar</Button>
-                    <Button size="sm" variant="danger" onClick={() => confirm({ message: `Excluir a categoria "${cat.name}"? Esta ação não pode ser desfeita.`, onConfirm: () => remove(cat.id) })}>Excluir</Button>
+                    <Button size="sm" variant="ghost" onClick={() => openEdit(cat)}><Pencil className="h-3.5 w-3.5 mr-1" />Editar</Button>
+                    <Button size="sm" variant="danger" onClick={() => confirm({ message: `Excluir a categoria "${cat.name}"? Esta ação não pode ser desfeita.`, onConfirm: () => remove(cat.id) })}><Trash2 className="h-3.5 w-3.5 mr-1" />Excluir</Button>
                   </div>
                 </Table.Td>
               </Table.Tr>
