@@ -9,7 +9,7 @@ import { accountCardService } from '@/services/accountCard.service'
 import type {
   Transaction, CreateTransactionRequest, UpdateTransactionRequest,
   TransactionType, SubscriptionFrequency, InstallmentType, Account, AccountCard, Category,
-  AvailableLimitResponse,
+  AvailableLimitResponse, Journal,
 } from '@/models/models'
 
 const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })
@@ -48,9 +48,10 @@ interface TransactionFormProps {
   accounts: Account[]
   cards: AccountCard[]
   categories: Category[]
+  journals: Journal[]
 }
 
-export default function TransactionForm({ open, onClose, onSubmit, initial, accounts, cards, categories }: TransactionFormProps) {
+export default function TransactionForm({ open, onClose, onSubmit, initial, accounts, cards, categories, journals }: TransactionFormProps) {
   const [description, setDescription] = useState('')
   const [amount, setAmount] = useState('')
   const [fee, setFee] = useState('0')
@@ -66,6 +67,7 @@ export default function TransactionForm({ open, onClose, onSubmit, initial, acco
   const [frequency, setFrequency] = useState<SubscriptionFrequency>('MONTHLY')
   const [installmentType, setInstallmentType] = useState<InstallmentType>('SAC')
   const [availableLimit, setAvailableLimit] = useState<AvailableLimitResponse | null>(null)
+  const [journalId, setJournalId] = useState('')
   const [loading, setLoading] = useState(false)
 
   const accountOptions = accounts.length === 0
@@ -113,6 +115,7 @@ export default function TransactionForm({ open, onClose, onSubmit, initial, acco
       setIsSubscription(false)
       setDueDate(new Date().toISOString().slice(0, 10))
       setFrequency('MONTHLY')
+      setJournalId('')
     }
   }, [initial, open, accounts, categories])
 
@@ -145,7 +148,7 @@ export default function TransactionForm({ open, onClose, onSubmit, initial, acco
     setCardError('')
   }
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
     setCategoryError('')
     setCardError('')
@@ -167,6 +170,8 @@ export default function TransactionForm({ open, onClose, onSubmit, initial, acco
 
       const base = { description, amount: Number(amount), fee: Number(fee), type, account, accountCard, category, installmentType }
 
+      const journal = journals.find((j) => j.id === journalId) ?? undefined
+
       const payload = initial
         ? ({ id: initial.id, ...base, installment: Number(installment) } as UpdateTransactionRequest)
         : ({
@@ -174,6 +179,7 @@ export default function TransactionForm({ open, onClose, onSubmit, initial, acco
             installment: isCredit && !isSubscription ? Number(installment) : 1,
             ...(isCredit && { dueDate: dueDate as unknown as Date }),
             ...(isCredit && isSubscription && { frequency }),
+            ...(journal && { journal }),
           } as CreateTransactionRequest)
 
       await onSubmit(payload)
@@ -333,6 +339,18 @@ export default function TransactionForm({ open, onClose, onSubmit, initial, acco
           onChange={(e) => { setCategoryId(e.target.value); setCategoryError('') }}
           error={categoryError}
         />
+        {!initial && (
+          <Select
+            id="tx-journal"
+            label="Diário (opcional)"
+            options={[
+              { label: 'Nenhum', value: '' },
+              ...journals.map((j) => ({ label: j.name, value: j.id })),
+            ]}
+            value={journalId}
+            onChange={(e) => setJournalId(e.target.value)}
+          />
+        )}
       </form>
     </Modal>
   )

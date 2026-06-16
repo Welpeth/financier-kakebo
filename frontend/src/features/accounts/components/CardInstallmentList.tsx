@@ -6,6 +6,7 @@ import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
 import Spinner from '@/components/ui/Spinner'
 import EmptyState from '@/components/ui/EmptyState'
+import { useConfirm, ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { installmentService } from '@/services/installment.service'
 import type { Installment } from '@/models/models'
 
@@ -45,6 +46,7 @@ interface CardInstallmentListProps {
 export default function CardInstallmentList({ cardId }: CardInstallmentListProps) {
   const [installments, setInstallments] = useState<Installment[]>([])
   const [loading, setLoading] = useState(true)
+  const { confirm, confirmState, closeConfirm } = useConfirm()
 
   const load = () => {
     setLoading(true)
@@ -114,7 +116,7 @@ export default function CardInstallmentList({ cardId }: CardInstallmentListProps
                     <Table.Td className="text-[var(--muted)]">{formatDate(inst.paidAt)}</Table.Td>
                     <Table.Td className="text-right">
                       {!inst.paid && (
-                        <Button size="sm" variant="ghost" onClick={() => pay(inst.id)}>
+                        <Button size="sm" variant="ghost" onClick={() => confirm({ title: 'Marcar parcela como paga', message: `Confirmar pagamento da ${inst.installmentNumber}ª parcela de ${fmt.format(inst.amount)}?`, confirmLabel: 'Marcar paga', variant: 'warning', onConfirm: () => pay(inst.id) })}>
                           Marcar paga
                         </Button>
                       )}
@@ -126,6 +128,7 @@ export default function CardInstallmentList({ cardId }: CardInstallmentListProps
           </div>
         )
       })}
+      <ConfirmDialog state={confirmState} onClose={closeConfirm} />
     </div>
   )
 }

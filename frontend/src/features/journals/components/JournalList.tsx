@@ -6,6 +6,7 @@ import Table from '@/components/ui/Table'
 import Button from '@/components/ui/Button'
 import Spinner from '@/components/ui/Spinner'
 import EmptyState from '@/components/ui/EmptyState'
+import { useConfirm, ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import JournalForm from './JournalForm'
 import { useJournals } from '../hooks/useJournals'
 import type { Journal, CreateJournalRequest, UpdateJournalRequest } from '@/models/models'
@@ -15,6 +16,7 @@ const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' 
 export default function JournalList() {
   const { journals, loading, create, update, remove } = useJournals()
   const router = useRouter()
+  const { confirm, confirmState, closeConfirm } = useConfirm()
   const [formOpen, setFormOpen] = useState(false)
   const [editing, setEditing] = useState<Journal | null>(null)
 
@@ -67,7 +69,7 @@ export default function JournalList() {
                   <div className="flex justify-end gap-2">
                     <Button size="sm" variant="ghost" onClick={() => router.push(`/journals/${j.id}`)}>Ver Entradas</Button>
                     <Button size="sm" variant="ghost" onClick={() => openEdit(j)}>Editar</Button>
-                    <Button size="sm" variant="danger" onClick={() => remove(j.id)}>Excluir</Button>
+                    <Button size="sm" variant="danger" onClick={() => confirm({ message: `Excluir o diário "${j.name}"? Todos os lançamentos serão removidos.`, onConfirm: () => remove(j.id) })}>Excluir</Button>
                   </div>
                 </Table.Td>
               </Table.Tr>
@@ -77,6 +79,7 @@ export default function JournalList() {
       )}
 
       <JournalForm open={formOpen} onClose={closeForm} onSubmit={handleSubmit} initial={editing} />
+      <ConfirmDialog state={confirmState} onClose={closeConfirm} />
     </>
   )
 }

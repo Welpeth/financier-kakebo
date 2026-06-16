@@ -1,10 +1,12 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Table from '@/components/ui/Table'
 import Button from '@/components/ui/Button'
 import Spinner from '@/components/ui/Spinner'
 import EmptyState from '@/components/ui/EmptyState'
+import { useConfirm, ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import LedgerEntryForm from './LedgerEntryForm'
 import { useLedgerEntries } from '../hooks/useLedgerEntries'
 import type { Journal, Transaction, LedgerEntry, CreateLedgerEntryRequest, UpdateLedgerEntryRequest } from '@/models/models'
@@ -19,6 +21,8 @@ interface LedgerEntryListProps {
 
 export default function LedgerEntryList({ journal, transactions, onTotalChange }: LedgerEntryListProps) {
   const { entries, loading, create, update, remove } = useLedgerEntries(journal.id)
+  const router = useRouter()
+  const { confirm, confirmState, closeConfirm } = useConfirm()
   const [formOpen, setFormOpen] = useState(false)
   const [editing, setEditing] = useState<LedgerEntry | null>(null)
 
@@ -74,8 +78,13 @@ export default function LedgerEntryList({ journal, transactions, onTotalChange }
                 </Table.Td>
                 <Table.Td className="text-right">
                   <div className="flex justify-end gap-2">
+                    {entry.transaction?.id && (
+                      <Button size="sm" variant="ghost" onClick={() => router.push(`/transactions/${entry.transaction.id}`)}>
+                        Ver Transação
+                      </Button>
+                    )}
                     <Button size="sm" variant="ghost" onClick={() => openEdit(entry)}>Editar</Button>
-                    <Button size="sm" variant="danger" onClick={() => handleRemove(entry.id)}>Excluir</Button>
+                    <Button size="sm" variant="danger" onClick={() => confirm({ message: `Excluir o lançamento "${entry.name}"? Esta ação não pode ser desfeita.`, onConfirm: () => handleRemove(entry.id) })}>Excluir</Button>
                   </div>
                 </Table.Td>
               </Table.Tr>
@@ -92,6 +101,7 @@ export default function LedgerEntryList({ journal, transactions, onTotalChange }
         journal={journal}
         transactions={transactions}
       />
+      <ConfirmDialog state={confirmState} onClose={closeConfirm} />
     </>
   )
 }

@@ -18,7 +18,7 @@ function TableRoot({ children, className = '' }: TableProps) {
 function Head({ children }: { children: ReactNode }) {
   return (
     <thead>
-      <tr className="bg-[var(--primary)]">
+      <tr className="bg-[var(--table-header)] border-b border-[var(--border)]">
         {children}
       </tr>
     </thead>
@@ -27,7 +27,7 @@ function Head({ children }: { children: ReactNode }) {
 
 function Th({ children, className = '' }: ThProps) {
   return (
-    <th className={`px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-white first:rounded-tl-xl last:rounded-tr-xl ${className}`}>
+    <th className={`px-4 py-3 text-left text-xs font-semibold text-[var(--muted)] first:rounded-tl-xl last:rounded-tr-xl ${className}`}>
       {children}
     </th>
   )
@@ -40,7 +40,7 @@ function Body({ children }: { children: ReactNode }) {
 function Tr({ children, className = '', onClick }: TrProps) {
   return (
     <tr
-      className={`transition-colors hover:bg-[var(--surface)] ${onClick ? 'cursor-pointer' : ''} ${className}`}
+      className={`transition-colors even:bg-[var(--table-row-alt)] hover:bg-[var(--surface-hover)] ${onClick ? 'cursor-pointer' : ''} ${className}`}
       onClick={onClick}
     >
       {children}

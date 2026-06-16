@@ -7,12 +7,14 @@ import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
 import Spinner from '@/components/ui/Spinner'
 import EmptyState from '@/components/ui/EmptyState'
+import { useConfirm, ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import TransactionForm from './TransactionForm'
 import { useTransactions } from '../hooks/useTransactions'
 import { useAccounts } from '@/features/accounts/hooks/useAccounts'
 import { accountCardService } from '@/services/accountCard.service'
 import { categoryService } from '@/services/category.service'
-import type { Transaction, CreateTransactionRequest, UpdateTransactionRequest, AccountCard, Category } from '@/models/models'
+import { journalService } from '@/services/journal.service'
+import type { Transaction, CreateTransactionRequest, UpdateTransactionRequest, AccountCard, Category, Journal } from '@/models/models'
 
 const typeLabel: Record<string, string> = { CASH: 'Dinheiro', DEBIT: 'Débito', CREDIT: 'Crédito', PIX: 'PIX' }
 const typeBadge: Record<string, 'success' | 'neutral' | 'warning' | 'danger'> = {
@@ -24,14 +26,17 @@ export default function TransactionList() {
   const { transactions, loading, create, update, remove } = useTransactions()
   const { accounts } = useAccounts()
   const router = useRouter()
+  const { confirm, confirmState, closeConfirm } = useConfirm()
   const [cards, setCards] = useState<AccountCard[]>([])
   const [categories, setCategories] = useState<Category[]>([])
+  const [journals, setJournals] = useState<Journal[]>([])
   const [formOpen, setFormOpen] = useState(false)
   const [editing, setEditing] = useState<Transaction | null>(null)
 
   useEffect(() => {
     accountCardService.findAll().then(setCards).catch(() => {})
     categoryService.findAll().then(setCategories).catch(() => {})
+    journalService.findAll().then(setJournals).catch(() => {})
   }, [])
 
   const handleSubmit = async (data: CreateTransactionRequest | UpdateTransactionRequest) => {
@@ -102,7 +107,7 @@ export default function TransactionList() {
                       </Button>
                     )}
                     <Button size="sm" variant="ghost" onClick={() => openEdit(tx)}>Editar</Button>
-                    <Button size="sm" variant="danger" onClick={() => remove(tx.id)}>Excluir</Button>
+                    <Button size="sm" variant="danger" onClick={() => confirm({ message: `Excluir a transação "${tx.description}"? Esta ação não pode ser desfeita.`, onConfirm: () => remove(tx.id) })}>Excluir</Button>
                   </div>
                 </Table.Td>
               </Table.Tr>
@@ -119,7 +124,9 @@ export default function TransactionList() {
         accounts={accounts}
         cards={cards}
         categories={categories}
+        journals={journals}
       />
+      <ConfirmDialog state={confirmState} onClose={closeConfirm} />
     </>
   )
 }

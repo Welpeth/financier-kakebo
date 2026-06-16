@@ -5,6 +5,7 @@ import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
 import Spinner from '@/components/ui/Spinner'
 import EmptyState from '@/components/ui/EmptyState'
+import { useConfirm, ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { useInstallments } from '../hooks/useInstallments'
 import type { Transaction } from '@/models/models'
 
@@ -29,6 +30,7 @@ interface InstallmentListProps {
 
 export default function InstallmentList({ transaction }: InstallmentListProps) {
   const { purchase, installments, loading, pay } = useInstallments(transaction.id)
+  const { confirm, confirmState, closeConfirm } = useConfirm()
 
   const paid = installments.filter((inst) => inst.paid).length
 
@@ -90,7 +92,7 @@ export default function InstallmentList({ transaction }: InstallmentListProps) {
                 <Table.Td className="text-[var(--muted)]">{formatDate(inst.paidAt)}</Table.Td>
                 <Table.Td className="text-right">
                   {!inst.paid && (
-                    <Button size="sm" variant="ghost" onClick={() => pay(inst.id)}>
+                    <Button size="sm" variant="ghost" onClick={() => confirm({ title: 'Marcar parcela como paga', message: `Confirmar pagamento da ${inst.installmentNumber}ª parcela de ${fmt.format(inst.amount)}?`, confirmLabel: 'Marcar paga', variant: 'warning', onConfirm: () => pay(inst.id) })}>
                       Marcar paga
                     </Button>
                   )}
@@ -100,6 +102,7 @@ export default function InstallmentList({ transaction }: InstallmentListProps) {
           </Table.Body>
         </Table>
       )}
+      <ConfirmDialog state={confirmState} onClose={closeConfirm} />
     </>
   )
 }

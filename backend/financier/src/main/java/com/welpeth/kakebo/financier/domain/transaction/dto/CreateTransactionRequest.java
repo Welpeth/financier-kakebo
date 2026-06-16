@@ -3,6 +3,7 @@ package com.welpeth.kakebo.financier.domain.transaction.dto;
 import com.welpeth.kakebo.financier.domain.account.entity.Account;
 import com.welpeth.kakebo.financier.domain.accountCard.entity.AccountCard;
 import com.welpeth.kakebo.financier.domain.category.entity.Category;
+import com.welpeth.kakebo.financier.domain.journal.entity.Journal;
 import com.welpeth.kakebo.financier.domain.subscription.type.SubscriptionFrequency;
 import com.welpeth.kakebo.financier.domain.transaction.type.InstallmentType;
 import com.welpeth.kakebo.financier.domain.transaction.type.TransactionType;
@@ -20,7 +21,8 @@ public record CreateTransactionRequest(
     String description,
     LocalDate dueDate,
     SubscriptionFrequency frequency,
-    InstallmentType installmentType
+    InstallmentType installmentType,
+    Journal journal
 ) {
 
 }
