@@ -4,6 +4,7 @@ CREATE TABLE "transaction"
     id_account_card UUID,
     id_account      UUID           NOT NULL,
     installments    INT            DEFAULT 1,
+    is_subscription BOOLEAN        DEFAULT FALSE,
     amount          DECIMAL(15, 2) NOT NULL,
     fee             DECIMAL(15, 2) DEFAULT 0,
     type            VARCHAR(50),

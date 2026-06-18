@@ -35,6 +35,7 @@ public class AccountCard extends BaseEntity {
 
   @Column(name = "credit_limit")
   private BigDecimal creditLimit;
+  
 
   @Column(name = "expiration_month", nullable = false)
   private Integer expirationMonth;
