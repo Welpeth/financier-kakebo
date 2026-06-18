@@ -12,6 +12,7 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -73,6 +74,22 @@ public class InstallmentCustomRepositoryImpl extends BaseCustomRepositoryImpl<In
         .join(installment.installmentPurchase, purchase).fetchJoin()
         .join(purchase.transaction, transaction).fetchJoin()
         .where(transaction.accountCard.id.eq(cardId))
+        .orderBy(installment.dueDate.asc())
+        .fetch();
+  }
+
+  @Override
+  public List<Installment> findUpcomingUnpaid(LocalDate limit) {
+    QInstallment installment = QInstallment.installment;
+    QInstallmentPurchase purchase = QInstallmentPurchase.installmentPurchase;
+    QTransaction transaction = QTransaction.transaction;
+
+    return getQueryFactory()
+        .selectFrom(installment)
+        .join(installment.installmentPurchase, purchase).fetchJoin()
+        .join(purchase.transaction, transaction).fetchJoin()
+        .where(installment.paid.isFalse()
+            .and(installment.dueDate.loe(limit)))
         .orderBy(installment.dueDate.asc())
         .fetch();
   }

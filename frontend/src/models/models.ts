@@ -1,6 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
-// Generated using typescript-generator version 4.1.1 on 2026-06-15 20:25:52.
+// Generated using typescript-generator version 4.1.1 on 2026-06-17 21:20:30.
 
 export interface CreateAccountRequest {
     name: string;
@@ -420,6 +420,17 @@ export interface Transaction extends BaseEntity {
     category: Category;
 }
 
+export interface Notification extends BaseEntity {
+    holder: Holder;
+    type: NotificationType;
+    referenceId: string;
+    title: string;
+    message: string;
+    amount: number;
+    dueDate: Date;
+    read: boolean;
+}
+
 export interface BaseEntity {
     id: string;
     createdAt: Date;
@@ -457,13 +468,8 @@ export interface Class<T> extends Serializable, GenericDeclaration, Type, Annota
 
 export interface Path<T> extends Expression<T> {
     root: Path<any>;
-    annotatedElement: AnnotatedElement;
     metadata: PathMetadata;
-}
-
-export interface AnnotatedElement {
-    annotations: Annotation[];
-    declaredAnnotations: Annotation[];
+    annotatedElement: AnnotatedElement;
 }
 
 export interface PathMetadata extends Serializable {
@@ -473,6 +479,11 @@ export interface PathMetadata extends Serializable {
     pathType: PathType;
     name: string;
     root: boolean;
+}
+
+export interface AnnotatedElement {
+    annotations: Annotation[];
+    declaredAnnotations: Annotation[];
 }
 
 export interface Serializable {
@@ -591,6 +602,8 @@ export type AccountType = "CHECKING" | "SAVINGS";
 export type CardType = "CREDIT" | "DEBIT";
 
 export type InstallmentType = "PRICE" | "SAC";
+
+export type NotificationType = "INSTALLMENT_DUE" | "SUBSCRIPTION_DUE";
 
 export type SubscriptionFrequency = "DAILY" | "WEEKLY" | "MONTHLY" | "QUARTERLY" | "YEARLY";
 
