@@ -26,7 +26,7 @@ export default function CategoryForm({ open, onClose, onSubmit, initial }: Categ
     }
   }, [initial, open])
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     setLoading(true)
@@ -49,9 +49,7 @@ export default function CategoryForm({ open, onClose, onSubmit, initial }: Categ
       footer={
         <>
           <Button variant="ghost" type="button" onClick={onClose} size="sm">Cancelar</Button>
-          <Button type="submit" form="category-form" loading={loading} size="sm">
-            {initial ? 'Salvar' : 'Criar'}
-          </Button>
+          <Button type="submit" form="category-form" loading={loading} size="sm">{initial ? 'Salvar' : 'Criar'}</Button>
         </>
       }
     >
