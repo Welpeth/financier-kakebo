@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import NotificationBell from '@/features/notifications/components/NotificationBell'
 
 export default function Header() {
   const [search, setSearch] = useState('')
@@ -34,11 +35,7 @@ export default function Header() {
 
       <div className="ml-auto flex items-center gap-2">
         {/* Bell */}
-        <button className="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--muted)] hover:bg-[var(--surface)] transition-colors">
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 00-5-5.917V4a1 1 0 10-2 0v1.083A6 6 0 006 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-          </svg>
-        </button>
+        <NotificationBell />
 
         {/* Avatar */}
         <div className="h-8 w-8 rounded-full bg-[var(--primary)] flex items-center justify-center text-white text-xs font-bold select-none">

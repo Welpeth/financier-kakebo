@@ -5,6 +5,7 @@ import com.welpeth.kakebo.financier.domain.installment.dto.UpdateInstallmentRequ
 import com.welpeth.kakebo.financier.domain.installment.entity.Installment;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,4 +17,6 @@ interface InstallmentCustomRepository extends BaseCustomRepository<Installment> 
   BigDecimal sumUnpaidAmountByCardId(UUID cardId);
 
   List<Installment> findByCardId(UUID cardId);
+
+  List<Installment> findUpcomingUnpaid(LocalDate limit);
 }

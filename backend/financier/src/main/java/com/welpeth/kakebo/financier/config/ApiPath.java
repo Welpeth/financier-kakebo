@@ -39,4 +39,7 @@ public final class ApiPath {
 
   // Subscription
   public static final String SUBSCRIPTION = "/subscription";
+
+  // Notification
+  public static final String NOTIFICATION = "/notification";
 }

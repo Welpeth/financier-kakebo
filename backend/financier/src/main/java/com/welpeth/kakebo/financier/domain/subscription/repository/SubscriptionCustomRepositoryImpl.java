@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Repository;
 
@@ -57,5 +58,19 @@ public class SubscriptionCustomRepositoryImpl extends BaseCustomRepositoryImpl<S
         .fetchOne();
 
     return total != null ? total : BigDecimal.ZERO;
+  }
+
+  @Override
+  public List<Subscription> findUpcomingActive(LocalDate limit) {
+    QSubscription subscription = QSubscription.subscription;
+    QTransaction transaction = QTransaction.transaction;
+
+    return getQueryFactory()
+        .selectFrom(subscription)
+        .join(subscription.transaction, transaction).fetchJoin()
+        .where(subscription.active.isTrue()
+            .and(subscription.nextChargeDate.loe(limit)))
+        .orderBy(subscription.nextChargeDate.asc())
+        .fetch();
   }
 }
