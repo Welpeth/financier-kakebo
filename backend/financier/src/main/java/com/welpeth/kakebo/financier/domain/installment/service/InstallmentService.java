@@ -27,9 +27,8 @@ public class InstallmentService {
   private final InstallmentPurchaseRepository installmentPurchaseRepository;
 
   public Installment get(UUID id) {
-    return repository.findById(id)
-        .orElseThrow(
-            () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Installment não encontrada"));
+    return repository.findById(id).orElseThrow(
+        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Installment não encontrada"));
   }
 
   public List<Installment> getList() {
@@ -46,34 +45,28 @@ public class InstallmentService {
 
   public void createList(CreateInstallmentListRequest request) {
     int totalInstallments = request.installmentNumber();
-    BigDecimal monthlyRate = request.fee()
-        .divide(BigDecimal.valueOf(100), MathContext.DECIMAL64);
+    BigDecimal monthlyRate = request.fee().divide(BigDecimal.valueOf(100), MathContext.DECIMAL64);
 
-    BigDecimal priceInstallment = request.installmentType() == InstallmentType.PRICE
-        ? calculatePrice(request.amount(), totalInstallments, monthlyRate)
-        : null;
+    BigDecimal priceInstallment =
+        request.installmentType() == InstallmentType.PRICE ? calculatePrice(request.amount(),
+            totalInstallments, monthlyRate) : null;
 
-    BigDecimal sacAmortization = request.installmentType() == InstallmentType.SAC
-        ? request.amount().divide(BigDecimal.valueOf(totalInstallments), MathContext.DECIMAL64)
-        : null;
+    BigDecimal sacAmortization = request.installmentType() == InstallmentType.SAC ? request.amount()
+        .divide(BigDecimal.valueOf(totalInstallments), MathContext.DECIMAL64) : null;
 
     List<Installment> installments = new ArrayList<>();
     for (int installmentNumber = 1; installmentNumber <= totalInstallments; installmentNumber++) {
-      BigDecimal amount = request.installmentType() == InstallmentType.PRICE
-          ? priceInstallment
-          : sacAmortization.add(
-              request.amount()
-                  .subtract(sacAmortization.multiply(BigDecimal.valueOf(installmentNumber - 1)))
-                  .multiply(monthlyRate));
+      BigDecimal amount = request.installmentType() == InstallmentType.PRICE ? priceInstallment
+          : sacAmortization.add(request.amount()
+              .subtract(sacAmortization.multiply(BigDecimal.valueOf(installmentNumber - 1)))
+              .multiply(monthlyRate));
 
-      installments.add(createInstallment(
-          request.installmentPurchase(), installmentNumber, amount,
+      installments.add(createInstallment(request.installmentPurchase(), installmentNumber, amount,
           request.dueDate().plusMonths(installmentNumber - 1)));
     }
     repository.saveAll(installments);
 
-    BigDecimal totalWithInterest = installments.stream()
-        .map(Installment::getAmount)
+    BigDecimal totalWithInterest = installments.stream().map(Installment::getAmount)
         .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     InstallmentPurchase purchase = request.installmentPurchase();
@@ -100,15 +93,15 @@ public class InstallmentService {
       BigDecimal pmt = calculatePrice(amount, totalInstallments, monthlyRate);
       return pmt.multiply(BigDecimal.valueOf(totalInstallments));
     }
-    BigDecimal interestFactor = monthlyRate
-        .multiply(BigDecimal.valueOf(totalInstallments + 1))
+    BigDecimal interestFactor = monthlyRate.multiply(BigDecimal.valueOf(totalInstallments + 1))
         .divide(BigDecimal.valueOf(2), MathContext.DECIMAL64);
     return amount.multiply(BigDecimal.ONE.add(interestFactor));
   }
 
   public Installment create(CreateInstallmentRequest request) {
-    return repository.save(createInstallment(request.installmentPurchase(),
-        request.installmentNumber(), request.amount(), request.dueDate()));
+    return repository.save(
+        createInstallment(request.installmentPurchase(), request.installmentNumber(),
+            request.amount(), request.dueDate()));
   }
 
   public void update(UpdateInstallmentRequest request) {
