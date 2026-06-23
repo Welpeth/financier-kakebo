@@ -4,13 +4,25 @@ updates:
     directory: "/backend/financier"
     schedule:
       interval: "weekly"
-
+    reviewers:
+      - Welpeth
+    assignees:
+      - Welpeth
+      
   - package-ecosystem: "npm"
     directory: "/frontend"
     schedule:
       interval: "weekly"
+    reviewers:
+      - Welpeth
+    assignees:
+      - Welpeth
       
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    reviewers:
+      - Welpeth
+    assignees:
+      - Welpeth
