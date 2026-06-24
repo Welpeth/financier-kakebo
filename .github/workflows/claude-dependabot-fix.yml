@@ -1,0 +1,79 @@
+name: Claude — fix Dependabot vulnerabilities
+
+# Layer on top of native Dependabot security updates: handles alerts that
+# Dependabot cannot auto-fix on its own (transitive deps needing an npm
+# "overrides", bumps with breaking changes that require code edits, etc.).
+#
+# Requirements (one-time setup):
+#   1. Run `/install-github-app` in Claude Code, OR install the Claude GitHub App.
+#   2. Add repo secret ANTHROPIC_API_KEY (Settings > Secrets and variables > Actions).
+#   3. If the default GITHUB_TOKEN cannot read Dependabot alerts in your org,
+#      add a PAT secret with `security_events: read` and expose it below.
+
+on:
+  schedule:
+    - cron: "0 8 * * 1" # every Monday 08:00 UTC
+  workflow_dispatch: {} # allow manual runs
+
+permissions:
+  contents: write # create branches/commits
+  pull-requests: write # open PRs
+  security-events: read # read Dependabot alerts
+
+concurrency:
+  group: claude-dependabot-fix
+  cancel-in-progress: false
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Claude fixes Dependabot alerts
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          claude_args: "--max-turns 40"
+          prompt: |
+            You are maintaining the repository ${{ github.repository }}.
+            Goal: open pull requests that fix OPEN Dependabot security alerts
+            which native Dependabot security updates did NOT already handle.
+
+            Steps:
+            1. List open alerts:
+               gh api "repos/${{ github.repository }}/dependabot/alerts?state=open&per_page=100"
+            2. List existing open Dependabot/automated PRs and SKIP any alert that
+               already has a PR (avoid duplicates):
+               gh pr list --state open --json title,headRefName
+            3. For each remaining alert, prioritising critical/high then moderate,
+               apply the MINIMAL fix on its own branch (one branch+PR per fix):
+                - npm transitive dep pinned by a parent  -> add/adjust an
+                  "overrides" entry in frontend/package.json, then run
+                  `npm install` in ./frontend to update the lockfile.
+                - npm direct dep -> bump it in frontend/package.json + lockfile.
+                - Maven dep -> bump the <version> in backend/financier/pom.xml.
+            4. Verify before opening the PR (do not skip):
+                - frontend changes: cd frontend && npm ci && npm run build
+                - backend changes:  cd backend/financier && mvn -B -ntp -DskipTests package
+            5. Open ONE pull request per fix with base `main`, never push to main.
+               In the PR body include: the GHSA/CVE id, package, old -> new version,
+               why the change is safe, and the verification output.
+            6. If an alert cannot be fixed safely (e.g. only a major bump with
+               breaking changes resolves it), open an issue describing it instead
+               of a risky PR.
