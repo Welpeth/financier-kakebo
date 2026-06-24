@@ -159,7 +159,7 @@ public class TransactionService {
       }
   
     public void createTransactionSchedule(Transaction saved, CreateTransactionRequest request) {
-      if (saved.isSubscription() && isCreditTransaction(type)) {
+      if (saved.isSubscription() && isCreditTransaction(request.type())) {
         subscriptionService.create(new CreateSubscriptionRequest(
             saved, request.frequency(), request.dueDate()
         ));
