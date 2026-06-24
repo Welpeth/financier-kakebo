@@ -141,7 +141,7 @@ public class TransactionService {
       }
     
       public void validateCreditTransaction(CreateTransactionRequest request) {
-        if (isCreditTransaction(request.type()) {
+        if (isCreditTransaction(request.type())) {
           if (request.accountCard() != null) {
             BigDecimal totalToCommit = calculateTotalToCommit(request);
             AvailableLimitResponse limit = accountCardService.getAvailableLimit(
@@ -187,7 +187,7 @@ public class TransactionService {
     
     public BigDecimal calculateTotalToCommit(CreateTransactionRequest request) {
       if (request.frequency() != null) {
-        return request.amount()
+        return request.amount();
       } else {
         return installmentService.calculateTotalWithInterest(
                 request.amount(),
