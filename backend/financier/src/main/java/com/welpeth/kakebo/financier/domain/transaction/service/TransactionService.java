@@ -16,6 +16,7 @@ import com.welpeth.kakebo.financier.domain.subscription.service.SubscriptionServ
 import com.welpeth.kakebo.financier.domain.transaction.dto.CreateTransactionRequest;
 import com.welpeth.kakebo.financier.domain.transaction.dto.UpdateTransactionRequest;
 import com.welpeth.kakebo.financier.domain.transaction.entity.Transaction;
+import com.welpeth.kakebo.financier.domain.journal.entity.Journal;
 import com.welpeth.kakebo.financier.domain.transaction.repository.TransactionRepository;
 import com.welpeth.kakebo.financier.domain.transaction.type.TransactionType;
 import com.welpeth.kakebo.financier.domain.subscription.type.SubscriptionFrequency;
@@ -123,7 +124,7 @@ public class TransactionService {
         repository.deleteAll();
       }
   
-      public Transaction setAndSaveTransaction(CreateTransaction request) {
+      public Transaction setAndSaveTransaction(CreateTransactionRequest request) {
             Transaction transaction = new Transaction();
             transaction.setId(UUID.randomUUID());
             transaction.setAccount(request.account());
