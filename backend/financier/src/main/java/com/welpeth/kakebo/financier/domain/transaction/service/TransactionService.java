@@ -19,7 +19,6 @@ import com.welpeth.kakebo.financier.domain.transaction.entity.Transaction;
 import com.welpeth.kakebo.financier.domain.journal.entity.Journal;
 import com.welpeth.kakebo.financier.domain.transaction.repository.TransactionRepository;
 import com.welpeth.kakebo.financier.domain.transaction.type.TransactionType;
-import com.welpeth.kakebo.financier.domain.subscription.type.SubscriptionFrequency;
 import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -78,9 +77,6 @@ public class TransactionService {
     
       @Transactional
       public void update(UpdateTransactionRequest request) {
-        if (request.category() == null || request.category().getId() == null) {
-          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Categoria obrigatória");
-        }
         if (request.amount() == null || request.amount().compareTo(BigDecimal.ONE) < 0) {
           throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
               "Valor mínimo da transação é R$ 1,00");
@@ -190,7 +186,7 @@ public class TransactionService {
       if (request.frequency() != null) {
         return request.amount();
       } else {
-        return installmentService.calculateTotalWithInterest(
+        return InstallmentService.calculateTotalWithInterest(
                 request.amount(),
                 request.installment() != null ? request.installment() : 1,
                 request.fee() != null ? request.fee() : BigDecimal.ZERO,
