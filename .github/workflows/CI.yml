@@ -91,6 +91,7 @@ jobs:
           mvn -B -ntp org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
             -Dsonar.projectKey=Welpeth_financier-kakebo \
             -Dsonar.projectName=financier-kakebo \
+            -Dsonar.organization=welpeth \
             -Dsonar.host.url="$SONAR_HOST_URL" \
             -Dsonar.token="$SONAR_TOKEN"
 
