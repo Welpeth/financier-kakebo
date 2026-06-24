@@ -78,3 +78,27 @@ jobs:
             gh issue create --repo "$REPO" --title "$title" --body "$body" --label security --label sonarqube
             echo "created: $title"
           done
+
+      - name: Close issues whose vulnerability is no longer open in Sonar
+        run: |
+          set -euo pipefail
+
+          # Sonar keys still open at BLOCKER/CRITICAL right now.
+          open_keys=$(curl -sf -u "$SONAR_TOKEN:" \
+            "https://sonarcloud.io/api/issues/search?organization=${SONAR_ORG}&componentKeys=${SONAR_PROJECT}&types=VULNERABILITY&severities=BLOCKER,CRITICAL&resolved=false&ps=100" \
+            | jq -r '.issues[]?.key')
+
+          # Walk our open GitHub issues and close the ones whose key vanished.
+          gh issue list --repo "$REPO" --state open --label sonarqube --limit 500 --json number,title \
+            | jq -c '.[]?' | while read -r gi; do
+              num=$(echo "$gi" | jq -r '.number')
+              gtitle=$(echo "$gi" | jq -r '.title')
+              # Key is the trailing (...) in the title.
+              gkey=$(printf '%s' "$gtitle" | grep -oE '\([^()]+\)$' | tr -d '()' || true)
+              [ -z "$gkey" ] && continue
+              if ! printf '%s\n' "$open_keys" | grep -Fxq "$gkey"; then
+                gh issue close "$num" --repo "$REPO" \
+                  --comment "Resolvida no SonarCloud ✅ — não consta mais entre as vulnerabilidades BLOCKER/CRITICAL abertas."
+                echo "closed #$num ($gkey)"
+              fi
+            done
