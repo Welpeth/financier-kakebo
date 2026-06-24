@@ -8,6 +8,12 @@ backend/target/
 backend/.idea/
 backend/out/
 
+# Secrets / local-only config (NEVER commit)
+.env
+**/.env
+!**/.env.example
+**/application-local.properties
+
 # Frontend (Node / React / Angular)
 frontend/node_modules/
 frontend/.idea/

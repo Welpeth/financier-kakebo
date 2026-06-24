@@ -1,0 +1,16 @@
+# Copy this file to `application-local.properties` and fill in real values.
+# `application-local.properties` is git-ignored and loaded automatically by
+# Spring Boot (see spring.config.import in application.properties).
+
+# JWT signing key. Generate a strong one, e.g.:
+#   openssl rand -base64 48
+application.security.jwt.secret=CHANGE_ME_GENERATE_A_LONG_RANDOM_SECRET
+# Token lifetime in milliseconds (default 24h).
+application.security.jwt.expiration=86400000
+
+# Local database credentials (must match compose.yaml / your Postgres).
+spring.datasource.username=postgres
+spring.datasource.password=${DB_PASSWORD:admin}
+
+# Verbose security logging for local debugging only (default is INFO).
+logging.level.org.springframework.security=DEBUG
