@@ -1,0 +1,80 @@
+name: SonarQube — open issues for critical vulnerabilities
+
+# Queries SonarQube Cloud for UNRESOLVED security vulnerabilities at
+# BLOCKER/CRITICAL severity and opens a GitHub Issue for each one.
+# Pure shell + gh (no Anthropic API, no cost). De-dupes by the Sonar issue key.
+#
+# Requires the existing repo secret SONAR_TOKEN.
+
+on:
+  schedule:
+    - cron: "0 9 * * *" # daily 09:00 UTC
+  workflow_dispatch: {} # run manually
+
+permissions:
+  issues: write
+  contents: read
+
+concurrency:
+  group: sonar-vuln-issues
+  cancel-in-progress: false
+
+jobs:
+  open-issues:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_ORG: welpeth
+      SONAR_PROJECT: Welpeth_financier-kakebo
+      REPO: ${{ github.repository }}
+    steps:
+      - name: Guard — SONAR_TOKEN present
+        run: |
+          if [ -z "${SONAR_TOKEN:-}" ]; then
+            echo "::error::SONAR_TOKEN secret is not set"; exit 1
+          fi
+
+      - name: Ensure labels exist
+        run: |
+          gh label create security  --repo "$REPO" --color D73A4A --description "Security issue"        --force
+          gh label create sonarqube --repo "$REPO" --color 4E9BCD --description "Reported by SonarQube" --force
+
+      - name: Open issues for critical/blocker vulnerabilities
+        run: |
+          set -euo pipefail
+
+          resp=$(curl -sf -u "$SONAR_TOKEN:" \
+            "https://sonarcloud.io/api/issues/search?organization=${SONAR_ORG}&componentKeys=${SONAR_PROJECT}&types=VULNERABILITY&severities=BLOCKER,CRITICAL&resolved=false&ps=100")
+
+          count=$(echo "$resp" | jq '.issues | length')
+          echo "Found $count unresolved BLOCKER/CRITICAL vulnerabilities."
+
+          # Existing issue titles (open + closed) for de-dup by Sonar key.
+          existing=$(gh issue list --repo "$REPO" --state all --limit 500 --json title --jq '.[].title' || true)
+
+          echo "$resp" | jq -c '.issues[]?' | while read -r issue; do
+            key=$(echo "$issue"  | jq -r '.key')
+            rule=$(echo "$issue" | jq -r '.rule')
+            sev=$(echo "$issue"  | jq -r '.severity')
+            msg=$(echo "$issue"  | jq -r '.message')
+            comp=$(echo "$issue" | jq -r '.component')
+            line=$(echo "$issue" | jq -r '.line // empty')
+            file=${comp#*:}
+
+            title="[Sonar][$sev] $msg ($key)"
+
+            if printf '%s\n' "$existing" | grep -Fq "($key)"; then
+              echo "skip (already exists): $title"
+              continue
+            fi
+
+            loc="\`$file\`"
+            if [ -n "$line" ]; then loc="$loc (line $line)"; fi
+            url="https://sonarcloud.io/project/issues?id=${SONAR_PROJECT}&open=${key}"
+
+            body=$(printf '## SonarQube security vulnerability\n\n- **Severity:** %s\n- **Rule:** `%s`\n- **Location:** %s\n- **Sonar key:** `%s`\n\n%s\n\n[Open in SonarCloud](%s)\n\n> Auto-created from SonarQube Cloud. Keep the `(%s)` in the title — it is used to avoid duplicates.\n' "$sev" "$rule" "$loc" "$key" "$msg" "$url" "$key")
+
+            gh issue create --repo "$REPO" --title "$title" --body "$body" --label security --label sonarqube
+            echo "created: $title"
+          done
