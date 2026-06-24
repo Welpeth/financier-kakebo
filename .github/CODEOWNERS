@@ -1,0 +1,4 @@
+# All changes require review/approval from the repository owner.
+# Combined with branch protection ("Require review from Code Owners"),
+# this makes @Welpeth a mandatory approver on every pull request.
+* @Welpeth
