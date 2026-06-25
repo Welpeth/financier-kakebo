@@ -47,9 +47,10 @@ jobs:
       DB_PASSWORD: postgres
       # CI-only signing key (>= 256 bits). NOT a real secret.
       JWT_SECRET: ci-only-test-secret-not-real-please-override-0123456789abcdef
-      # SonarQube (optional): set these as repo secrets to enable analysis.
+      # SonarCloud: only SONAR_TOKEN is required (already set as a repo secret).
+      # Host defaults to SonarCloud; override via the SONAR_HOST_URL secret if self-hosted.
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL || 'https://sonarcloud.io' }}
 
     steps:
       - uses: actions/checkout@v4
@@ -78,8 +79,8 @@ jobs:
       - name: Check SonarQube config
         id: sonarcfg
         run: |
-          if [ -z "$SONAR_TOKEN" ] || [ -z "$SONAR_HOST_URL" ]; then
-            echo "::warning::SONAR_TOKEN/SONAR_HOST_URL not set — skipping SonarQube analysis"
+          if [ -z "$SONAR_TOKEN" ]; then
+            echo "::warning::SONAR_TOKEN not set — skipping SonarQube analysis"
             echo "run=false" >> "$GITHUB_OUTPUT"
           else
             echo "run=true" >> "$GITHUB_OUTPUT"
@@ -93,7 +94,8 @@ jobs:
             -Dsonar.projectName=financier-kakebo \
             -Dsonar.organization=welpeth \
             -Dsonar.host.url="$SONAR_HOST_URL" \
-            -Dsonar.token="$SONAR_TOKEN"
+            -Dsonar.token="$SONAR_TOKEN" \
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
 
   # ---------------------------------------------------------------------------
   # CodeQL static security analysis (Java + JS/TS)
