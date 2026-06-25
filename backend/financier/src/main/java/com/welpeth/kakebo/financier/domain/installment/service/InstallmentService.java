@@ -58,11 +58,11 @@ public class InstallmentService {
     for (int installmentNumber = 1; installmentNumber <= totalInstallments; installmentNumber++) {
       BigDecimal amount = request.installmentType() == InstallmentType.PRICE ? priceInstallment
           : sacAmortization.add(request.amount()
-              .subtract(sacAmortization.multiply(BigDecimal.valueOf(installmentNumber - 1)))
+              .subtract(sacAmortization.multiply(BigDecimal.valueOf(installmentNumber - 1L)))
               .multiply(monthlyRate));
 
       installments.add(createInstallment(request.installmentPurchase(), installmentNumber, amount,
-          request.dueDate().plusMonths(installmentNumber - 1)));
+          request.dueDate().plusMonths(installmentNumber - 1L)));
     }
     repository.saveAll(installments);
 
@@ -93,7 +93,7 @@ public class InstallmentService {
       BigDecimal pmt = calculatePrice(amount, totalInstallments, monthlyRate);
       return pmt.multiply(BigDecimal.valueOf(totalInstallments));
     }
-    BigDecimal interestFactor = monthlyRate.multiply(BigDecimal.valueOf(totalInstallments + 1))
+    BigDecimal interestFactor = monthlyRate.multiply(BigDecimal.valueOf(totalInstallments + 1L))
         .divide(BigDecimal.valueOf(2), MathContext.DECIMAL64);
     return amount.multiply(BigDecimal.ONE.add(interestFactor));
   }
