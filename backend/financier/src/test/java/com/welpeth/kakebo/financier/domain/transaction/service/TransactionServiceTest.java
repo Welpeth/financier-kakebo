@@ -225,6 +225,26 @@ class TransactionServiceTest {
     assertThat(total).isGreaterThan(amount);
   }
 
+  @Test
+  @DisplayName("calculateTotalToCommit usa 1 parcela e taxa zero quando installment e fee são nulos")
+  void calculateTotalUsesDefaultsWhenInstallmentAndFeeNull() {
+    // Arrange
+    BigDecimal amount = new BigDecimal("100");
+    CreateTransactionRequest request = createRequestBuilder()
+        .amount(amount)
+        .frequency(null)
+        .installment(null)
+        .fee(null)
+        .installmentType(InstallmentType.SAC)
+        .build();
+
+    // Act
+    BigDecimal total = service.calculateTotalToCommit(request);
+
+    // Assert
+    assertThat(total).isEqualByComparingTo(amount);
+  }
+
   // ----- setAndSaveTransaction -----
 
   @Test
@@ -337,6 +357,29 @@ class TransactionServiceTest {
     verify(subscriptionService).create(any());
     verify(installmentPurchaseService, never()).create(any());
     verify(installmentService, never()).createList(any());
+  }
+
+  @Test
+  @DisplayName("createTransactionSchedule cai no parcelamento quando é assinatura mas não é crédito")
+  void scheduleFallsBackToInstallmentsForNonCreditSubscription() {
+    // Arrange
+    Transaction saved = new Transaction();
+    saved.setId(UUID.randomUUID());
+    saved.setSubscription(true);
+    saved.setAmount(new BigDecimal("100"));
+    saved.setFee(BigDecimal.ZERO);
+    saved.setInstallment(1);
+    CreateTransactionRequest request = createRequestBuilder()
+        .type(TransactionType.CASH)
+        .frequency(SubscriptionFrequency.MONTHLY)
+        .build();
+
+    // Act
+    service.createTransactionSchedule(saved, request);
+
+    // Assert
+    verify(installmentPurchaseService).create(any());
+    verify(subscriptionService, never()).create(any());
   }
 
   @Test
@@ -463,6 +506,22 @@ class TransactionServiceTest {
     // Assert
     verify(installmentPurchaseService).update(any());
     verify(installmentService).deleteByPurchase(purchase.getId());
+    verify(installmentService).createList(any());
+  }
+
+  @Test
+  @DisplayName("update de crédito recalcula mesmo quando a compra não tem parcelas registradas")
+  void updateCreditWithPurchaseButNoInstallmentsRecalculates() {
+    // Arrange
+    UpdateTransactionRequest request = updateRequest(TransactionType.CREDIT, new BigDecimal("100"));
+    InstallmentPurchase purchase = installmentPurchase();
+    when(installmentPurchaseService.getByTransaction(request.id())).thenReturn(List.of(purchase));
+    when(installmentService.getByPurchase(purchase.getId())).thenReturn(List.of());
+
+    // Act
+    service.update(request);
+
+    // Assert
     verify(installmentService).createList(any());
   }
 
