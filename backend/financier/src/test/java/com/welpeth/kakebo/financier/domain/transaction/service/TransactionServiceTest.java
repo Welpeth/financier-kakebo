@@ -29,6 +29,7 @@ import com.welpeth.kakebo.financier.domain.transaction.type.InstallmentType;
 import com.welpeth.kakebo.financier.domain.transaction.type.TransactionType;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
@@ -454,7 +455,7 @@ class TransactionServiceTest {
     InstallmentPurchase purchase = installmentPurchase();
     when(installmentPurchaseService.getByTransaction(request.id())).thenReturn(List.of(purchase));
     when(installmentService.getByPurchase(purchase.getId()))
-        .thenReturn(List.of(installment(1, LocalDate.of(2026, 1, 10))));
+        .thenReturn(List.of(installment(1, LocalDate.of(2026, Month.JANUARY, 10))));
 
     // Act
     service.update(request);
@@ -578,7 +579,7 @@ class TransactionServiceTest {
     private BigDecimal fee = BigDecimal.ZERO;
     private Integer installment = 1;
     private String description = "Compra";
-    private LocalDate dueDate = LocalDate.of(2026, 1, 10);
+    private LocalDate dueDate = LocalDate.of(2026, Month.JANUARY, 10);
     private SubscriptionFrequency frequency;
     private InstallmentType installmentType = InstallmentType.PRICE;
     private Journal journal;
