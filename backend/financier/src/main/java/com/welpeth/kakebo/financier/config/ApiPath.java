@@ -2,6 +2,10 @@ package com.welpeth.kakebo.financier.config;
 
 public final class ApiPath {
 
+  private ApiPath() {
+    throw new AssertionError("Utility class should not be instantiated");
+  }
+
   // Authentication
   public static final String AUTH = "/auth";
   public static final String AUTH_LOGIN = AUTH + "/login";
