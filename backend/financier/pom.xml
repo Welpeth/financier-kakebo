@@ -29,6 +29,7 @@
   </scm>
   <properties>
     <java.version>21</java.version>
+    <typescript.generator.skip>false</typescript.generator.skip>
   </properties>
   <dependencies>
     <dependency>
@@ -50,6 +51,10 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-webmvc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -230,6 +235,7 @@
         <artifactId>typescript-generator-maven-plugin</artifactId>
         <version>4.1.1</version>
         <configuration>
+          <skip>${typescript.generator.skip}</skip>
           <jsonLibrary>jackson2</jsonLibrary>
           <outputFile>../../frontend/src/models/models.ts</outputFile>
           <outputFileType>implementationFile</outputFileType>
