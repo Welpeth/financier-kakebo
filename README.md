@@ -17,6 +17,9 @@ A personal finance manager inspired by the Japanese *kakebo* budgeting method â€
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 <br/>
 [![CI](https://github.com/Welpeth/financier-kakebo/actions/workflows/CI.yml/badge.svg)](https://github.com/Welpeth/financier-kakebo/actions/workflows/CI.yml)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Welpeth_financier-kakebo&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Welpeth_financier-kakebo)
+[![SonarCloud](https://sonarcloud.io/api/project_badges/measure?project=Welpeth_financier-kakebo&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Welpeth_financier-kakebo)
+[![CodeQL](https://img.shields.io/badge/CodeQL-enabled-2088FF?logo=github&logoColor=white)](https://github.com/Welpeth/financier-kakebo/actions/workflows/CI.yml)
 [![License](https://img.shields.io/badge/license-CRL--1.1-blue?style=flat-square)](LICENSE.md)
 
 </div>
